@@ -1,0 +1,71 @@
+# menu.yml
+title: "&8&lMenu &8| Régions ({page}/{max_pages})" # Ajout de la pagination au titre
+size: 45 # De ton ancienne config
+
+static-items:
+  # Fillers rouges
+  filler_red_1: { slot: 0, material: "RED_STAINED_GLASS_PANE", name: " " }
+  filler_red_2: { slot: 8, material: "RED_STAINED_GLASS_PANE", name: " " }
+  filler_red_3: { slot: 36, material: "RED_STAINED_GLASS_PANE", name: " " }
+  filler_red_4: { slot: 44, material: "RED_STAINED_GLASS_PANE", name: " " }
+  # Fillers noirs
+  filler_black_1: { slot: 1, material: "BLACK_STAINED_GLASS_PANE", name: " " }
+  filler_black_2: { slot: 7, material: "BLACK_STAINED_GLASS_PANE", name: " " }
+  filler_black_3: { slot: 9, material: "BLACK_STAINED_GLASS_PANE", name: " " }
+  filler_black_4: { slot: 17, material: "BLACK_STAINED_GLASS_PANE", name: " " }
+  filler_black_5: { slot: 27, material: "BLACK_STAINED_GLASS_PANE", name: " " }
+  filler_black_6: { slot: 35, material: "BLACK_STAINED_GLASS_PANE", name: " " }
+  filler_black_7: { slot: 37, material: "BLACK_STAINED_GLASS_PANE", name: " " }
+  filler_black_8: { slot: 43, material: "BLACK_STAINED_GLASS_PANE", name: " " }
+
+  close_button:
+    slot: 40
+    material: "PAPER"
+    name: "&cRetour &8(clic)"
+    action: "COMMAND:dm open island_more"
+
+  # Optionnel: Boutons de pagination si tu as plus de régions que de slots
+  previous_page:
+    slot: 38 # Exemple de slot, ajuste si besoin
+    material: "ARROW"
+    name: "&fPage Précédente"
+    action: "PREVIOUS_PAGE"
+  next_page:
+    slot: 42 # Exemple de slot, ajuste si besoin
+    material: "ARROW"
+    name: "&fPage Suivante"
+    action: "NEXT_PAGE"
+
+
+# L'item filler-item global n'est pas utilisé ici car tu as des fillers spécifiques par slot.
+# Si tu voulais un filler pour TOUS les slots vides non définis par region-item-slots ou static-items:
+# filler-item:
+#   enabled: false # ou true si tu veux l'utiliser en plus des statiques
+
+# Slots où les items des régions seront placés.
+# L'ordre ici est important si tu veux mapper directement tes anciens `regions;X`.
+# Le MenuManager remplira ces slots avec les régions dans l'ordre où elles sont définies dans regions.yml
+# (ou triées si tu ajoutes une logique de tri).
+region-item-slots:
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 29
+  - 30
+  - 31
+  - 32
+  - 33
+
+# Note sur `Inventories.regions_discoveries`:
+# Ce menu semble être un menu séparé. Tu peux le créer comme un deuxième
+# "type" de menu dans MenuManager si nécessaire, ou faire un item dans le menu principal
+# qui exécute une commande ouvrant ce menu spécifique (si c'est un autre plugin ou une partie
+# que tu veux recréer).
+# Pour l'instant, la structure de code fournie se concentre sur UN type de menu principal paginé.

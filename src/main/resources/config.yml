@@ -1,0 +1,29 @@
+# Mondes où la commande /codex ne peut pas être utilisée
+blacklist-worlds:
+  - "arene"
+  - "Revent"
+  # - "another_world_blacklisted"
+
+messages:
+  no-permission: "&8&l« &f&lSH &8&l» &fCommande inconnue, essayer autre chose"
+  reload: "&7&l« &a&lSH &8&l» &7Configuration de &aSHCodex &7rechargée &aavec succès"
+  player-only: "&7&l« &c&lSH &8&l» &7Cette commande ne peut être exécutée que par un joueur."
+  world-blacklisted: "&7&l« &c&lSH &8&l» &7Vous ne pouvez pas ouvrir le &cCodex&7 dans ce monde"
+
+  # Messages pour les commandes admin
+  admin:
+    usage: "&cUsage: /codex admin <joueur> <list|unlock|lock> [region_id]"
+    player-not-found: "&cLe joueur '{player}' n'a pas été trouvé ou ne s'est jamais connecté."
+    region-not-found: "&cLa région '{region_id}' n'existe pas."
+    already-unlocked: "&eLe joueur {player} a déjà découvert la région {region_name}&e."
+    unlock-success: "&aLa région {region_name} &aa été débloquée pour {player}."
+    not-yet-unlocked: "&eLe joueur {player} n'a pas encore découvert la région {region_name}&e."
+    lock-success: "&cLa région {region_name} &ca été re-verrouillée pour {player}."
+    list-header: "&6--- Codex de {player} ({discovered}/{total}) ---"
+    list-format-discovered: "&e✔ {region_name}"
+    list-format-undiscovered: "&c✖ {region_name}"
+    
+# %shcodex_discovered_count%           - Affiche le nombre total de régions que le joueur a découvertes.
+# %shcodex_total_count%                - Affiche le nombre total de régions configurées et disponibles à la découverte dans le plugin (basé sur regions.yml).
+# %shcodex_is_discovered_<ID_REGION>%  - Vérifie si le joueur a découvert une région spécifique. <ID_REGION> doit être remplacé par l'ID interne de la région tel que défini dans regions.yml (par exemple, arene_pvp, monde_noel).
+# %shcodex_name_<ID_REGION>%           - Affiche le nom d'affichage (formaté avec les couleurs) d'une région spécifique. <ID_REGION> doit être remplacé par l'ID interne de la région.

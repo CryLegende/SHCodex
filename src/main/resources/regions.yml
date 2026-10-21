@@ -1,0 +1,780 @@
+# regions.yml
+# REMARQUE IMPORTANTE: Tu devras ajouter le 'world:' pour chaque région.
+# Je vais mettre "world_skyblock" comme placeholder, mais ajuste-le au nom réel de ton monde.
+regions:
+  # ----- Génération des récompenses globales (à répéter pour chaque région) -----
+  # Ces blocs seront insérés dans la section 'rewards' de chaque région ci-dessous.
+  # Pour la clarté, je ne les répète pas visuellement ici, mais imagine-les dans chaque 'rewards:'
+  #
+  #   rewards:
+  #     # Titre global
+  #     title:
+  #       type: "TITLE" # ou SUBTITLE si title est vide
+  #       value: ";%name%" # Laisser le titre vide, mettre la valeur dans subtitle
+  #       # Si tu as besoin de TITLE et SUBTITLE séparés:
+  #       # value: "TITRE_ICI;%name%"
+  #       fadein: 20
+  #       stay: 60
+  #       fadeout: 20
+  #     # Messages globaux
+  #     message_1:
+  #       type: "MESSAGE"
+  #       value: " "
+  #     message_2:
+  #       type: "MESSAGE"
+  #       value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}"
+  #     message_3:
+  #       type: "MESSAGE"
+  #       value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex"
+  #     message_4:
+  #       type: "MESSAGE"
+  #       value: " "
+  #     # Commandes globales par découverte
+  #     cmd_1:
+  #       type: "COMMAND"
+  #       value: "shnetworklevel exp give {player} 5"
+  #     cmd_2:
+  #       type: "COMMAND"
+  #       value: "sm {player} &b+5 exp de network &7(/network)"
+  #     # Son global
+  #     sound:
+  #       type: "SOUND"
+  #       value: "BLOCK_GILDED_BLACKSTONE_STEP"
+  #       volume: 10.0 # Attention, 10 est très fort, Minecraft utilise généralement 0.1-2.0
+  #       pitch: 0.1
+  #     # Commandes spécifiques à la région (viendront après les globales)
+  #     # ...
+  # ----- Fin des récompenses globales à insérer -----
+
+  #OLD CODEX
+
+  # monde_noel:
+  #   worldguard-region-id: "monde-noel"
+  #   world: "noel" # (Probablement un monde différent)
+  #   display-name: "&c&lMonde de noël &7(région éphémère)" # Ajout mention éphémère
+  #   item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+  #   item-discovered:
+  #     material: "WRITABLE_BOOK"
+  #     name: "&c&lMonde de noël &7(région éphémère)"
+  #     lore:
+  #       - "&7Région uniquement accessible"
+  #       - "&7pendant une certaine période"
+  #       - "&7de l''année."
+  #       - ""
+  #       - "&fZone disponible qu'une fois par"
+  #       - "&fan, pendant la période de &cnoël"
+  #       - ""
+  #       - "&7Découvert le: &e{discovery_date}"
+  #   rewards:
+  #     title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+  #     message_1: { type: "MESSAGE", value: " " }
+  #     message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+  #     message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+  #     message_4: { type: "MESSAGE", value: " " }
+  #     cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 5" }
+  #     cmd_2: { type: "COMMAND", value: "sm {player} &b+5 exp de network &7(/network)" }
+  #     sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+  #
+  # monde_paques:
+  #   worldguard-region-id: "monde-paques"
+  #   world: "paques"
+  #   display-name: "&d&lMonde de pâques &7(région éphémère)"
+  #   item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+  #   item-discovered:
+  #     material: "WRITABLE_BOOK"
+  #     name: "&d&lMonde de pâques &7(région éphémère)"
+  #     lore:
+  #       - "&7Région uniquement accessible"
+  #       - "&7pendant une certaine période"
+  #       - "&7de l''année."
+  #       - ""
+  #       - "&fZone disponible qu'une fois par"
+  #       - "&fan, pendant la période de &dpâques"
+  #       - ""
+  #       - "&7Découvert le: &e{discovery_date}"
+  #   rewards:
+  #     title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+  #     message_1: { type: "MESSAGE", value: " " }
+  #     message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+  #     message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+  #     message_4: { type: "MESSAGE", value: " " }
+  #     cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 5" }
+  #     cmd_2: { type: "COMMAND", value: "sm {player} &b+5 exp de network &7(/network)" }
+  #     sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+  #
+  # monde_halloween:
+  #   worldguard-region-id: "monde-halloween"
+  #   world: "halloween"
+  #   display-name: "&6&lMonde Halloween &7(région éphémère)"
+  #   item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+  #   item-discovered:
+  #     material: "WRITABLE_BOOK"
+  #     name: "&6&lMonde Halloween &7(région éphémère)"
+  #     lore:
+  #       - "&7Région uniquement accessible"
+  #       - "&7pendant une certaine période"
+  #       - "&7de l''année."
+  #       - ""
+  #       - "&fZone disponible qu'une fois par"
+  #       - "&fan, pendant la période d'&6Halloween"
+  #       - ""
+  #       - "&7Découvert le: &e{discovery_date}"
+  #   rewards:
+  #     title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+  #     message_1: { type: "MESSAGE", value: " " }
+  #     message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+  #     message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+  #     message_4: { type: "MESSAGE", value: " " }
+  #     cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 5" }
+  #     cmd_2: { type: "COMMAND", value: "sm {player} &b+5 exp de network &7(/network)" }
+  #     sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+  #
+  # monde_summer:
+  #   worldguard-region-id: "monde-summer"
+  #   world: "summer"
+  #   display-name: "&e&lMonde Summer &7(région éphémère)"
+  #   item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+  #   item-discovered:
+  #     material: "WRITABLE_BOOK"
+  #     name: "&e&lMonde Summer &7(région éphémère)"
+  #     lore:
+  #       - "&7Région uniquement accessible"
+  #       - "&7pendant une certaine période"
+  #       - "&7de l''année."
+  #       - ""
+  #       - "&fZone disponible qu'une fois par"
+  #       - "&fan, pendant l'&eété"
+  #       - ""
+  #       - "&7Découvert le: &e{discovery_date}"
+  #   rewards:
+  #     title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+  #     message_1: { type: "MESSAGE", value: " " }
+  #     message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+  #     message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+  #     message_4: { type: "MESSAGE", value: " " }
+  #     cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 5" }
+  #     cmd_2: { type: "COMMAND", value: "sm {player} &b+5 exp de network &7(/network)" }
+  #     sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+  #
+  # toilettes_publiques:
+  #   worldguard-region-id: "toilettes"
+  #   world: "spawn"
+  #   display-name: "&9Toilettes... publiques ?"
+  #   item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+  #   item-discovered:
+  #     material: "WRITABLE_BOOK"
+  #     name: "&9Toilettes... publiques ?"
+  #     lore:
+  #       - ""
+  #       - "&fJe ne vois pas ce qu'il"
+  #       - "&fy a d'embarrassant à faire"
+  #       - "&fça en publique..."
+  #       - ""
+  #       - "&7Découvert le: &e{discovery_date}"
+  #   rewards:
+  #     title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+  #     message_1: { type: "MESSAGE", value: " " }
+  #     message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+  #     message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+  #     message_4: { type: "MESSAGE", value: " " }
+  #     cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 70" }
+  #     cmd_2: { type: "COMMAND", value: "sm {player} &b+70 exp de network &7(/network)" }
+  #     sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+  #
+  # tombeau_warden:
+  #   worldguard-region-id: "warden"
+  #   world: "spawn"
+  #   display-name: "&3Tombeau du Warden"
+  #   item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+  #   item-discovered:
+  #     material: "WRITABLE_BOOK"
+  #     name: "&3Tombeau du Warden"
+  #     lore:
+  #       - ""
+  #       - "&fIl fait froid ici..."
+  #       - ""
+  #       - "&7Découvert le: &e{discovery_date}"
+  #   rewards:
+  #     title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+  #     message_1: { type: "MESSAGE", value: " " }
+  #     message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+  #     message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+  #     message_4: { type: "MESSAGE", value: " " }
+  #     cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 100" }
+  #     cmd_2: { type: "COMMAND", value: "sm {player} &b+100 exp de network &7(/network)" }
+  #     sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+#NEW CODEX
+
+  arene_pvp: # ID unique basé sur 'discovered_on_region'
+    worldguard-region-id: "codex_arene"
+    world: "arene"
+    display-name: "&6&lArène PvP"
+
+    item-undiscovered:
+      material: "BOOK" # Par défaut, comme dans ton ancien menu
+      name: "&c???????"
+      lore:
+        - ''
+        - '&7Vous n''avez pas encore'
+        - '&7découvert cette région'
+        - ''
+    item-discovered:
+      material: "WRITABLE_BOOK" # Ou ENCHANTED_BOOK pour un look différent
+      name: "&6&lArène PvP" # display-name sera utilisé via {region_name} dans le menu
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fIci, combattez contre d'autres"
+        - "&fjoueurs et participez aux events"
+        - "&fCargaison ou KoTH (&7/events&f)."
+        - ""
+        - "&7Découvert le: &e{discovery_date}" # Ajout de la date
+      # click-action: "COMMAND:warp pvp {player}" # Exemple si tu veux une action de TP
+
+    rewards:
+      # (Insérer les récompenses globales ici)
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 } # Volume ajusté
+
+  henri:
+    worldguard-region-id: "codex_henri"
+    world: "spawn"
+    display-name: "&6Henri"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&6Henri"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fC'est henri, il aime rire."
+        - "&7"
+        - "&7Une légende raconte qu'il"
+        - "&7donne parfois des items rares"
+        - "&7si vous le faites bien rire."
+        - "&7"
+        - "&7Retournez facilement dans"
+        - "&7cette region avec &6/warp henri"
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+      click-action: "COMMAND:warp henri {player}" # Ajouté basé sur le lore
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  meilleurs_joueurs:
+    worldguard-region-id: "codex_top"
+    world: "spawn"
+    display-name: "&e&lMeilleurs joueurs"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&e&lMeilleurs joueurs"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fIci, apprenez qui sont les"
+        - "&fmeilleurs joueurs du SkyBlock"
+        - "&fou plutôt, vos concurrents..."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+      click-action: "COMMAND:warp top {player}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  cookie_clicker:
+    worldguard-region-id: "codex_cookie"
+    world: "spawn"
+    display-name: "&6&lCookie Clicker"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&6&lCookie Clicker"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fC'est inutile, mais arriverez-"
+        - "&fvous à cliquer assez de fois pour"
+        - "&fentrer dans le classement ?"
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+      click-action: "COMMAND:warp cookie {player}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  jump_principal: # Renommé pour éviter confusion avec jump_secret
+    worldguard-region-id: "codex_jump"
+    world: "spawn"
+    display-name: "&3&lJump"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&3&lJump"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fVous avez découvert le jump mais"
+        - "&favez-vous réussi à le terminer ?"
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+      click-action: "COMMAND:warp jump {player}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  duel_1vs1:
+    worldguard-region-id: "1vs1"
+    world: "spawn"
+    display-name: "&5&lDuel"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&5&lDuel"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fProuvez votre valeur, exterminez"
+        - "&fles autres joueurs en duel !"
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+      click-action: "COMMAND:warp duel {player}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  jump_secret:
+    worldguard-region-id: "codex_jump_secret"
+    world: "spawn"
+    display-name: "&3&lJump Secret"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&3&lJump Secret"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fhmm, ce jump n'est pas"
+        - "&fcensé être là..."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 25" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  mona_lisa:
+    worldguard-region-id: "codex_monalisa"
+    world: "spawn"
+    display-name: "&6Mona Lisa"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&6Mona Lisa"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fDécouvrez la seule et l'unique"
+        - "&6Mona lisa&f. C'est un cadeau du"
+        - "&fLouvre pour la journée alors"
+        - "&fprofitez-en !"
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  bibliotheque:
+    worldguard-region-id: "codex_bibliotheque"
+    world: "spawn"
+    display-name: "&cBibliothèque abandonnée"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&cBibliothèque abandonnée"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fLes livres qui façonnent"
+        - "&fles tables d'enchantement"
+        - "&fsemblent provenir de cet endroit."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  candy:
+    worldguard-region-id: "codex_candy"
+    world: "spawn"
+    display-name: "&dCandy Land"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&dCandy Land"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fDans ce monde, plein"
+        - "&fde confiseries, tout est"
+        - "&dcomestible &fou presque."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 25" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  japon:
+    worldguard-region-id: "codex_japon"
+    world: "spawn"
+    display-name: "&bVoyage au Japon"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&bVoyage au Japon"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fEn creusant de l'autre"
+        - "&fcôté de la Terre, on"
+        - "&fse retrouve dans ce monde"
+        - "&fféérique et apaisant."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 25" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  escargot:
+    worldguard-region-id: "codex_escargot"
+    world: "spawn"
+    display-name: "&9Lenny l'escargot"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&9Lenny l'escargot"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fVous avez réveillé"
+        - "&9Lenny l'escargot &f!"
+        - "&fPartez vite avant qu'il"
+        - "&fvous rattrape !"
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 25" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  egout:
+    worldguard-region-id: "codex_egout"
+    world: "spawn"
+    display-name: "&3Égouts"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&3Égouts"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fLes eaux usées de la ville"
+        - "&font permis de créer une"
+        - "&fvie paisible ici."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  nether:
+    worldguard-region-id: "codex_nether"
+    world: "spawn"
+    display-name: "&cUne autre dimension"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&cUne autre dimension"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fUne version miniature d'un"
+        - "&f monde oublié plein de secret."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  navire:
+    worldguard-region-id: "codex_quai"
+    world: "spawn"
+    display-name: "&eQuai des navires"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&eQuai des navires"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fC'est ici que les navires"
+        - "&fvolants accostent l'île pour"
+        - "&fdécharger leur cargaison."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  grotte:
+    worldguard-region-id: "codex_grotte"
+    world: "spawn"
+    display-name: "&aGrotte souterraine"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&aGrotte souterraine"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fUn endroit sombre rempli"
+        - "&fd'une substance verte qui"
+        - "&fsemble être partout sur"
+        - "&fcette île..."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  rat:
+    worldguard-region-id: "codex_rat"
+    world: "spawn"
+    display-name: "&6Un rat !"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&6Un rat !"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fLes égouts sont remplis"
+        - "&fde cette substance verte."
+        - "&fIl n'a pas d'autre choix"
+        - "&fque de se réfugier ici."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  cheminee:
+    worldguard-region-id: "codex_cheminee"
+    world: "spawn"
+    display-name: "&3Cheminéee"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&3Cheminéee"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fC'est de là que vient toute"
+        - "&fla fumée qui se répend"
+        - "&fdans l'air de cette île."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  usine:
+    worldguard-region-id: "codex_usine"
+    world: "spawn"
+    display-name: "&6Usine"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&6Usine"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fCe qu'on construit ici"
+        - "&fsemble être important et"
+        - "&fmystérieux à la fois."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  poisson:
+    worldguard-region-id: "codex_poisson"
+    world: "spawn"
+    display-name: "&9Aquarium"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&9Aquarium"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&9Bloup Bloup..."
+        - "&fComme un poisson dans l'eau !"
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+  christmas:
+    worldguard-region-id: "codex_christmas"
+    world: "christmas"
+    display-name: "&x&F&F&F&F&F&F&lM&x&E&D&F&E&F&F&lo&x&D&B&F&E&F&F&ln&x&C&A&F&D&F&F&ld&x&B&8&F&C&F&F&le&x&A&6&F&B&F&F&l &x&9&4&F&B&F&F&ld&x&8&2&F&A&F&F&le&x&7&0&F&9&F&F&l &x&5&F&F&8&F&F&lN&x&4&D&F&8&F&F&lo&x&3&B&F&7&F&F&lë&x&2&9&F&6&F&F&ll"
+    item-undiscovered: { material: "BOOK", name: "&c???????", lore: [ '', '&7Vous n''avez pas encore', '&7découvert cette région', '' ] }
+    item-discovered:
+      material: "WRITABLE_BOOK"
+      name: "&x&F&F&F&F&F&F&lM&x&E&D&F&E&F&F&lo&x&D&B&F&E&F&F&ln&x&C&A&F&D&F&F&ld&x&B&8&F&C&F&F&le&x&A&6&F&B&F&F&l &x&9&4&F&B&F&F&ld&x&8&2&F&A&F&F&le&x&7&0&F&9&F&F&l &x&5&F&F&8&F&F&lN&x&4&D&F&8&F&F&lo&x&3&B&F&7&F&F&lë&x&2&9&F&6&F&F&ll"
+      lore:
+        - "&8Découvert par: {total_discovered} joueur(s)"
+        - ""
+        - "&fOn raconte que chaque pas"
+        - "&fdans ce royaume renforce"
+        - "&fla magie de Noël."
+        - ""
+        - "&7Découvert le: &e{discovery_date}"
+    rewards:
+      title: { type: "TITLE", value: ";{region_name}", fadein: 20, stay: 60, fadeout: 20 }
+      message_1: { type: "MESSAGE", value: " " }
+      message_2: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fNouvelle région découverte: {region_name}" }
+      message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
+      message_4: { type: "MESSAGE", value: " " }
+      cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
+
+
+# NOTE: J'ai utilisé une syntaxe YAML condensée pour les récompenses pour la lisibilité.
+# En réalité, chaque récompense serait sur plusieurs lignes comme dans l'exemple 'arene_pvp' initial.
+# Assure-toi de respecter l'indentation YAML correcte.
+# J'ai aussi ajusté le volume du son à 1.0 car 10.0 est extrêmement élevé.

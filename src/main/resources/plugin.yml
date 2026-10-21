@@ -1,0 +1,27 @@
+name: SHCodex
+version: '${project.version}'
+main: org.Cry_Legende.sHCodex.SHCodex
+api-version: '1.20'
+author: Cry_Legende
+description: Un codex de zones à découvrir avec WorldGuard.
+depend:
+  - WorldGuard # Essentiel pour la détection des régions
+softdepend:
+  - PlaceholderAPI # Pour les placeholders dans les messages, menus, etc.
+
+commands:
+  codex:
+    description: Ouvre le menu du Codex ou gère le plugin.
+    usage: /codex [reload]
+    aliases: [shcodex, regions] # Tu peux garder ou enlever cet alias
+
+permissions:
+  shcodex.use:
+    description: Permet d'utiliser la commande /codex pour ouvrir le menu.
+    default: true
+  shcodex.admin:
+    description: "Permet d'utiliser les commandes d'administration du Codex (ex: /codex reload)."
+    default: op
+  shcodex.discover.*: # Permission globale pour découvrir toutes les régions
+    description: Permet de découvrir toutes les régions du Codex.
+    default: true # Ou op, ou false si tu veux gérer par région individuellement
