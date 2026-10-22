@@ -39,11 +39,14 @@ Utilisé sur : **Opale**.
 
 ## Configuration
 
-Fichiers par défaut repris du serveur (secrets remplacés par `CHANGE_ME`) :
+Fichiers par défaut repris du serveur (secrets remplacés par `CHANGE_ME`). Cliquez sur un fichier pour l'ouvrir :
 
-- `config.yml`
-- `menu.yml`
-- `regions.yml`
+<pre>
+plugins/SHCodex/
+├── <a href="src/main/resources/config.yml">config.yml</a>
+├── <a href="src/main/resources/menu.yml">menu.yml</a>
+└── <a href="src/main/resources/regions.yml">regions.yml</a>
+</pre>
 
 ## Compilation
 
