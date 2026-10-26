@@ -2,7 +2,7 @@ package org.Cry_Legende.sHCodex.listener;
 
 import org.Cry_Legende.sHCodex.SHCodex;
 import org.Cry_Legende.sHCodex.config.RegionConfig;
-import org.Cry_Legende.sHCodex.util.ChatUtil; // Assurez-vous d'avoir cet import
+import org.Cry_Legende.sHCodex.menu.MenuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority; // Pour potentiellement ajuster la priorité
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,59 +22,37 @@ public class MenuListener implements Listener {
     private final SHCodex plugin;
     private final NamespacedKey actionKey;
     private final NamespacedKey regionIdKey;
-    private final String menuTitleBase; // Stocker la base du titre pour comparaison
 
     public MenuListener(SHCodex plugin) {
         this.plugin = plugin;
         this.actionKey = new NamespacedKey(plugin, "shcodex_action");
         this.regionIdKey = new NamespacedKey(plugin, "shcodex_region_id");
-        // Extraire la partie fixe du titre du menu pour une vérification de secours
-        String rawTitle = plugin.getConfigManager().getMenuTitle(); // Ex: "&8&lMenu &8| Régions ({page}/{max_pages})"
-        if (rawTitle.contains("{page}")) {
-            this.menuTitleBase = ChatUtil.colorize(rawTitle.substring(0, rawTitle.indexOf("{page}")));
-        } else {
-            this.menuTitleBase = ChatUtil.colorize(rawTitle); // Au cas où il n'y aurait pas de placeholder de page
-        }
+    }
+
+    /** Le Codex est-il l'inventaire du haut ? (getHolder(false) : pas de copie d'état de bloc pour les autres inventaires) */
+    private static boolean isCodexMenu(Inventory topInventory) {
+        return topInventory.getHolder(false) instanceof MenuManager.CodexMenuHolder;
     }
 
     @EventHandler(priority = EventPriority.NORMAL) // Vous pouvez essayer HIGHEST si ça ne marche toujours pas
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) return;
-        Player player = (Player) event.getWhoClicked();
+        if (!(event.getWhoClicked() instanceof Player player)) return;
         Inventory clickedInventory = event.getClickedInventory();
         Inventory topInventory = event.getView().getTopInventory();
+
+        if (!isCodexMenu(topInventory)) {
+            // Ce n'est pas notre menu, on ne fait rien.
+            return;
+        }
+
+        // C'est notre menu : tout clic est annulé, y compris dans l'inventaire du joueur
+        // (shift-clic qui déposait un objet dans le menu où il disparaissait, double-clic qui ramassait les objets du menu).
+        event.setCancelled(true);
 
         if (clickedInventory == null || !topInventory.equals(clickedInventory)) {
             // Clic en dehors ou dans l'inventaire du joueur
             return;
         }
-
-        // Vérification si c'est notre menu
-        boolean isOurMenu = false;
-        String menuIdentifier = plugin.getMenuManager().getPlayerOpenMenuIdentifier(player);
-
-        if (menuIdentifier != null && menuIdentifier.startsWith("CODEX_MAIN_")) {
-            isOurMenu = true;
-        } else {
-            // Plan B: Vérifier si le titre de l'inventaire correspond à notre pattern de base
-            // Cela peut aider si menuIdentifier est devenu null à cause d'un timing
-            // lors de la réouverture rapide d'inventaire.
-            // On vérifie que le titre actuel de l'inventaire commence par la partie fixe configurée.
-            if (event.getView().getTitle().startsWith(this.menuTitleBase)) {
-                // Potentiel problème ici: si PAPI est dans le titre, PlaceholderAPI.setPlaceholders peut changer le début.
-                // Pour un test, on peut être plus simple:
-                // plugin.getLogger().info("[DEBUG] MenuID was null or wrong. TopInv Title: '" + event.getView().getTitle() + "', Base Pattern: '" + this.menuTitleBase + "'");
-                isOurMenu = true; // On considère que c'est notre menu si le titre matche
-            }
-        }
-
-        if (!isOurMenu) {
-            // Ce n'est pas notre menu, on ne fait rien.
-            return;
-        }
-
-        // C'est notre menu, on annule le clic.
-        event.setCancelled(true);
 
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null || clickedItem.getType().isAir()) {
@@ -131,24 +109,11 @@ public class MenuListener implements Listener {
         // --- Fin de la logique de traitement des actions ---
     }
 
-    @EventHandler(priority = EventPriority.MONITOR) // MONITOR pour s'assurer qu'il s'exécute après les autres
-    public void onInventoryClose(InventoryCloseEvent event) {
-        if (!(event.getPlayer() instanceof Player)) return;
-        Player player = (Player) event.getPlayer();
-
-        String menuIdentifier = plugin.getMenuManager().getPlayerOpenMenuIdentifier(player);
-        // On ne clear que si l'identifiant correspond ET que le titre de l'inventaire fermé
-        // correspond aussi à ce que l'on attend de nos menus.
-        // Cela évite de clear si un autre plugin ouvre un inventaire juste après une action de notre menu
-        // qui aurait dû fermer le nôtre, mais que l'InventoryCloseEvent de notre menu arrive en retard.
-        if (menuIdentifier != null && menuIdentifier.startsWith("CODEX_MAIN_")) {
-            // Vérification supplémentaire basée sur le titre pour plus de robustesse.
-            // Si le titre de l'inventaire fermé commence par notre base de titre,
-            // alors il est très probable que ce soit notre menu qui se ferme.
-            if (event.getView().getTitle().startsWith(this.menuTitleBase)) {
-                // plugin.getLogger().info("[DEBUG] Clearing open menu for " + player.getName() + " due to close event. Title: " + event.getView().getTitle());
-                plugin.getMenuManager().clearPlayerOpenMenu(player);
-            }
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onInventoryDrag(InventoryDragEvent event) {
+        // Un glisser-déposer qui touche le menu y déposerait des objets perdus à la fermeture
+        if (isCodexMenu(event.getView().getTopInventory())) {
+            event.setCancelled(true);
         }
     }
 }

@@ -3,6 +3,9 @@ package org.Cry_Legende.sHCodex.config;
 import org.Cry_Legende.sHCodex.SHCodex;
 import org.Cry_Legende.sHCodex.util.ChatUtil;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,6 +16,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -30,7 +34,10 @@ public class ConfigManager {
 
     // Cached values
     private List<String> blacklistedWorlds;
-    private Map<String, RegionConfig> regionConfigs = new HashMap<>();
+    // Remplacées en bloc au rechargement (volatile) : PlaceholderAPI peut les lire hors du thread principal
+    private volatile Map<String, RegionConfig> regionConfigs = new HashMap<>();
+    // Index pour PlayerMoveEvent : id de région WorldGuard en minuscules -> régions du Codex
+    private volatile Map<String, List<RegionConfig>> regionsByWorldGuardId = new HashMap<>();
     private String menuTitle;
     private int menuSize;
     private Map<Integer, MenuItemConfig> menuStaticItems = new HashMap<>();
@@ -101,7 +108,8 @@ public class ConfigManager {
     }
 
     private void loadRegionConfigs() {
-        regionConfigs.clear();
+        Map<String, RegionConfig> loaded = new HashMap<>();
+        Map<String, List<RegionConfig>> byWorldGuardId = new HashMap<>();
         ConfigurationSection regionsSection = regionsConfig.getConfigurationSection("regions");
         if (regionsSection != null) {
             for (String key : regionsSection.getKeys(false)) {
@@ -133,6 +141,11 @@ public class ConfigManager {
                         if (rewardActionSec == null) continue;
                         String typeStr = rewardActionSec.getString("type");
                         String value = rewardActionSec.getString("value");
+                        // Sans type ou sans valeur : NullPointerException au chargement ou à la découverte
+                        if (typeStr == null || value == null) {
+                            plugin.getLogger().warning("Reward '" + rewardKey + "' of region '" + key + "' has no type or value. Skipping.");
+                            continue;
+                        }
                         float volume = (float) rewardActionSec.getDouble("volume", 1.0);
                         float pitch = (float) rewardActionSec.getDouble("pitch", 1.0);
                         int fadeIn = rewardActionSec.getInt("fadein", 10);
@@ -147,9 +160,17 @@ public class ConfigManager {
                         }
                     }
                 }
-                regionConfigs.put(key, new RegionConfig(key, wgRegionId, worldName, displayName, undiscoveredItem, discoveredItem, rewards));
+                RegionConfig regionConfig = new RegionConfig(key, wgRegionId, worldName, displayName, undiscoveredItem, discoveredItem, rewards);
+                loaded.put(key, regionConfig);
+                if (wgRegionId == null || wgRegionId.isEmpty()) {
+                    plugin.getLogger().warning("Region '" + key + "' has no worldguard-region-id: it cannot be discovered.");
+                } else {
+                    byWorldGuardId.computeIfAbsent(wgRegionId.toLowerCase(Locale.ROOT), k -> new ArrayList<>()).add(regionConfig);
+                }
             }
         }
+        regionConfigs = loaded;
+        regionsByWorldGuardId = byWorldGuardId;
         plugin.getLogger().info("Loaded " + regionConfigs.size() + " region configurations.");
     }
 
@@ -218,6 +239,31 @@ public class ConfigManager {
 
     public RegionConfig getRegionConfig(String id) {
         return regionConfigs.get(id);
+    }
+
+    /** Régions du Codex liées à cette région WorldGuard (insensible à la casse), liste vide sinon. */
+    public List<RegionConfig> getRegionsByWorldGuardId(String worldGuardRegionId) {
+        return regionsByWorldGuardId.getOrDefault(worldGuardRegionId.toLowerCase(Locale.ROOT), List.of());
+    }
+
+    /**
+     * Son lu en config : ancien nom (ENTITY_PLAYER_LEVELUP) ou clé (minecraft:entity.player.levelup).
+     * Sound.valueOf est marqué pour suppression en 26.x.
+     *
+     * @return le son, ou null s'il est inconnu
+     */
+    public static Sound sound(String raw) {
+        if (raw == null || raw.isBlank()) return null;
+        String s = raw.trim();
+        if (s.indexOf(':') >= 0 || s.indexOf('.') >= 0) {
+            NamespacedKey key = NamespacedKey.fromString(s.toLowerCase(Locale.ROOT));
+            return key == null ? null : Registry.SOUND_EVENT.get(key);
+        }
+        try {
+            return (Sound) Sound.class.getField(s.toUpperCase(Locale.ROOT)).get(null);
+        } catch (ReflectiveOperationException | ClassCastException e) {
+            return null;
+        }
     }
 
     public String getMenuTitle() {

@@ -1,6 +1,7 @@
 package org.Cry_Legende.sHCodex.playerdata;
 
 import org.Cry_Legende.sHCodex.SHCodex;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,12 +16,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 public class PlayerDataManager implements Listener {
 
     private final SHCodex plugin;
-    private final Map<UUID, PlayerData> playerDataMap = new HashMap<>();
+    // Concurrente : chargée/sauvegardée en asynchrone (join/quit), lue sur le thread principal et par PlaceholderAPI
+    private final Map<UUID, PlayerData> playerDataMap = new ConcurrentHashMap<>();
     private final File playerDataFolder;
 
     public PlayerDataManager(SHCodex plugin) {
@@ -54,7 +57,7 @@ public class PlayerDataManager implements Listener {
 
         File playerFile = new File(playerDataFolder, uuid.toString() + ".yml");
         if (!playerFile.exists()) {
-            playerDataMap.put(uuid, new PlayerData()); // Nouveau joueur, données vides
+            playerDataMap.putIfAbsent(uuid, new PlayerData()); // Nouveau joueur, données vides
             return;
         }
 
@@ -66,7 +69,8 @@ public class PlayerDataManager implements Listener {
                 discoveredRegions.put(regionId, discoveredSection.getLong(regionId));
             }
         }
-        playerDataMap.put(uuid, new PlayerData(discoveredRegions));
+        // putIfAbsent : ne remplace pas des données chargées entre-temps sur un autre thread
+        playerDataMap.putIfAbsent(uuid, new PlayerData(discoveredRegions));
         plugin.getLogger().fine("Loaded player data for " + uuid.toString());
     }
 
@@ -78,7 +82,24 @@ public class PlayerDataManager implements Listener {
     public void savePlayerData(UUID uuid) {
         PlayerData data = playerDataMap.get(uuid);
         if (data == null) return;
+        writePlayerData(uuid, data);
+    }
 
+    /**
+     * Sauvegarde asynchrone des données d'un joueur chargé (après une découverte), pour qu'un arrêt brutal
+     * ne fasse pas perdre une découverte déjà récompensée (elle serait récompensée une seconde fois).
+     */
+    public void savePlayerDataAsync(UUID uuid) {
+        PlayerData data = playerDataMap.get(uuid);
+        if (data == null || !plugin.isEnabled()) return;
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> writePlayerData(uuid, data));
+    }
+
+    /**
+     * Écrit l'état courant de ces données. synchronized : deux sauvegardes (quit, découverte, arrêt) n'écrivent
+     * jamais le même fichier en même temps, et chacune copie l'état au moment où elle écrit (la dernière est la plus récente).
+     */
+    private synchronized void writePlayerData(UUID uuid, PlayerData data) {
         File playerFile = new File(playerDataFolder, uuid.toString() + ".yml");
         FileConfiguration playerConfig = new YamlConfiguration();
 
@@ -100,8 +121,8 @@ public class PlayerDataManager implements Listener {
      */
     public void saveAllPlayerData() {
         plugin.getLogger().info("Saving all loaded player data...");
-        for (UUID uuid : playerDataMap.keySet()) {
-            savePlayerData(uuid);
+        for (Map.Entry<UUID, PlayerData> entry : playerDataMap.entrySet()) {
+            writePlayerData(entry.getKey(), entry.getValue());
         }
         plugin.getLogger().info("All player data saved.");
     }
@@ -132,11 +153,21 @@ public class PlayerDataManager implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-        // Sauvegarder et décharger les données de manière asynchrone
+        String name = player.getName();
+        PlayerData data = playerDataMap.get(uuid);
+        if (data == null) return;
+        // Sauvegarder de manière asynchrone, puis décharger sur le thread principal seulement si le joueur ne
+        // s'est pas reconnecté entre-temps (sinon son chargement aurait relu un fichier pas encore écrit,
+        // ou ses données auraient été déchargées alors qu'il est en ligne)
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            savePlayerData(uuid);
-            unloadPlayerData(uuid);
-            plugin.getLogger().info("Player data for " + player.getName() + " saved and unloaded.");
+            writePlayerData(uuid, data);
+            if (!plugin.isEnabled()) return;
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                if (Bukkit.getPlayer(uuid) == null) {
+                    playerDataMap.remove(uuid, data);
+                }
+                plugin.getLogger().info("Player data for " + name + " saved and unloaded.");
+            });
         });
     }
 }

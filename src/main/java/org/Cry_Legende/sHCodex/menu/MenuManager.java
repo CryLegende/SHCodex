@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -25,20 +26,25 @@ public class MenuManager {
     private final NamespacedKey actionKey;
     private final NamespacedKey regionIdKey;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-    private final Map<UUID, String> playerOpenMenus = new HashMap<>();
+
+    /**
+     * Marque l'inventaire du Codex. Remplace la carte joueur -> menu ouvert et la comparaison de titre :
+     * la carte était vidée par la fermeture de la page précédente juste après l'ouverture de la suivante,
+     * et le titre change au /codex reload.
+     */
+    public static final class CodexMenuHolder implements InventoryHolder {
+        private Inventory inventory;
+
+        @Override
+        public Inventory getInventory() {
+            return inventory;
+        }
+    }
 
     public MenuManager(SHCodex plugin) {
         this.plugin = plugin;
         this.actionKey = new NamespacedKey(plugin, "shcodex_action");
         this.regionIdKey = new NamespacedKey(plugin, "shcodex_region_id");
-    }
-
-    public void clearPlayerOpenMenu(Player player) {
-        playerOpenMenus.remove(player.getUniqueId());
-    }
-
-    public String getPlayerOpenMenuIdentifier(Player player) {
-        return playerOpenMenus.get(player.getUniqueId());
     }
 
     public void openCodexMenu(Player player, int page) {
@@ -69,7 +75,9 @@ public class MenuManager {
             title = PlaceholderAPI.setPlaceholders(player, title);
         }
 
-        Inventory menu = Bukkit.createInventory(null, plugin.getConfigManager().getMenuSize(), title);
+        CodexMenuHolder holder = new CodexMenuHolder();
+        Inventory menu = Bukkit.createInventory(holder, plugin.getConfigManager().getMenuSize(), title);
+        holder.inventory = menu;
 
         // Placer les items statiques
         for (Map.Entry<Integer, MenuItemConfig> entry : plugin.getConfigManager().getMenuStaticItems().entrySet()) {
@@ -166,7 +174,6 @@ public class MenuManager {
             }
         }
 
-        playerOpenMenus.put(player.getUniqueId(), "CODEX_MAIN_" + page);
         player.openInventory(menu);
     }
 }
