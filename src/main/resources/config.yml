@@ -1,3 +1,28 @@
+# ======================================================================== #
+#                       SHCodex - Configuration                            #
+# ======================================================================== #
+#
+# Plugin : codex de zones à découvrir. Quand un joueur entre pour la première fois dans une région WorldGuard
+# listée dans regions.yml, la région est marquée découverte et ses récompenses sont données. Le menu du codex
+# (menu.yml) montre les régions découvertes et le nombre de joueurs qui les ont trouvées (stats.yml).
+#
+# Commandes (alias /shcodex, /regions) :
+#   /codex                                  Ouvre le menu du codex.                       shcodex.use
+#   /codex reload                           Recharge les fichiers de configuration.       shcodex.admin
+#   /codex admin <joueur> <list|unlock|lock> [région]   Voir, débloquer, reverrouiller.   shcodex.admin
+#
+# Permissions : shcodex.use (tous), shcodex.admin (op), shcodex.discover.* (tous) ou shcodex.discover.<région>.
+#
+# Placeholders : %shcodex_discovered_count%, %shcodex_total_count%, %shcodex_is_discovered_<région>%, %shcodex_name_<région>%.
+#
+# Plusieurs serveurs Opale : toutes les régions de regions.yml sont dans les mondes spawn, arene et christmas, qui
+# n'existent que sur le serveur du spawn. SHCodex n'a donc pas de mode réseau : les découvertes, les récompenses,
+# playerdata/ et stats.yml restent sur ce serveur-là, et aucune région ne peut être découverte ailleurs.
+# Sur un autre serveur, /codex et les placeholders ne lisent qu'une copie de playerdata/ qui n'est pas mise à jour :
+# ajouter le monde des îles à blacklist-worlds pour y fermer la commande.
+#
+# ======================================================================== #
+
 # Mondes où la commande /codex ne peut pas être utilisée
 blacklist-worlds:
   - "arene"

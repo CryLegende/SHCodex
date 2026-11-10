@@ -29,6 +29,12 @@ Utilisé sur : **Opale**.
 |---|---|---|---|
 | `/codex` | `/shcodex`, `/regions` | Ouvre le menu du Codex ou gère le plugin. | — |
 
+## Plusieurs serveurs Opale
+
+SHCodex n'a pas de mode réseau, et n'en a pas besoin pour découvrir les régions : les 21 régions de `regions.yml` sont dans les mondes `spawn`, `arene` et `christmas`, qui n'existent que sur le serveur du spawn, de l'arène et des events. C'est lui qui détecte les découvertes, donne les récompenses et garde seul `playerdata/<uuid>.yml` et `stats.yml`. Aucune région ne peut être découverte sur un autre serveur, donc une récompense de découverte n'y est jamais donnée deux fois.
+
+Sur un autre serveur, `/codex` et les placeholders `%shcodex_...%` ne lisent qu'une copie de `playerdata/` qui n'est pas mise à jour (aucune découverte récente, parfois aucune). Le plus simple est d'y ajouter le monde des îles (`superiorworld`) à `blacklist-worlds` dans `config.yml` : la commande répond alors « Vous ne pouvez pas ouvrir le Codex dans ce monde ». Montrer le codex à jour sur plusieurs serveurs demanderait un stockage partagé des régions découvertes (`INSERT IGNORE` sur le couple joueur et région pour décider qui reçoit la récompense).
+
 ## Permissions
 
 | Permission | Description | Par défaut |
