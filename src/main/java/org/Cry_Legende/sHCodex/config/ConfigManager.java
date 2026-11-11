@@ -228,6 +228,20 @@ public class ConfigManager {
         loadConfigs();
     }
 
+    /** config.yml tel que lu au dernier chargement (section reseau du mode réseau). */
+    public FileConfiguration getRawConfig() {
+        return config;
+    }
+
+    /**
+     * Message de la section messages.admin, avec le préfixe ; la valeur par défaut sert quand la clé manque dans le
+     * config.yml du serveur (un fichier plus ancien que le plugin).
+     */
+    public String adminMessage(String key, String defaultValue) {
+        String prefix = ChatUtil.colorize(config.getString("messages.prefix", ""));
+        return prefix + ChatUtil.colorize(config.getString("messages.admin." + key, defaultValue));
+    }
+
     // Getters
     public List<String> getBlacklistedWorlds() {
         return blacklistedWorlds;

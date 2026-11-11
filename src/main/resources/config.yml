@@ -10,16 +10,18 @@
 #   /codex                                  Ouvre le menu du codex.                       shcodex.use
 #   /codex reload                           Recharge les fichiers de configuration.       shcodex.admin
 #   /codex admin <joueur> <list|unlock|lock> [région]   Voir, débloquer, reverrouiller.   shcodex.admin
+#   /codex import                           Avec SHNetwork : copie playerdata/ dans la base.  shcodex.admin
 #
 # Permissions : shcodex.use (tous), shcodex.admin (op), shcodex.discover.* (tous) ou shcodex.discover.<région>.
 #
 # Placeholders : %shcodex_discovered_count%, %shcodex_total_count%, %shcodex_is_discovered_<région>%, %shcodex_name_<région>%.
 #
 # Plusieurs serveurs Opale : toutes les régions de regions.yml sont dans les mondes spawn, arene et christmas, qui
-# n'existent que sur le serveur du spawn. SHCodex n'a donc pas de mode réseau : les découvertes, les récompenses,
-# playerdata/ et stats.yml restent sur ce serveur-là, et aucune région ne peut être découverte ailleurs.
-# Sur un autre serveur, /codex et les placeholders ne lisent qu'une copie de playerdata/ qui n'est pas mise à jour :
-# ajouter le monde des îles à blacklist-worlds pour y fermer la commande.
+# n'existent que sur le serveur du spawn, c'est lui qui détecte les découvertes et donne les récompenses. Avec SHNetwork
+# (voir la section 'reseau' en bas du fichier), les régions découvertes de chaque joueur et les stats sont dans une base
+# partagée : /codex et les placeholders montrent les mêmes données sur tous les serveurs. Sans SHNetwork, rien ne change :
+# playerdata/ et stats.yml restent sur ce serveur-là (et sur un autre serveur, /codex ne lirait qu'une copie de playerdata/
+# qui n'est pas mise à jour : ajouter le monde des îles à blacklist-worlds pour y fermer la commande).
 #
 # ======================================================================== #
 
@@ -47,8 +49,40 @@ messages:
     list-header: "&6--- Codex de {player} ({discovered}/{total}) ---"
     list-format-discovered: "&e✔ {region_name}"
     list-format-undiscovered: "&c✖ {region_name}"
+    # Mode réseau (SHNetwork)
+    forwarded: "&7&l« &e&lSH &8&l» &e{player} &7est sur le serveur &e{server}&7 : la commande lui a été &etransmise&7."
+    loading: "&7&l« &e&lSH &8&l» &7Le codex de &e{player} &7est en cours de chargement, réessaie dans un instant."
+    database-error: "&7&l« &c&lSH &8&l» &7La base du réseau ne répond pas."
+    import-done: "&7&l« &a&lSH &8&l» &7Importation terminée : &a{imported} &7région(s) ajoutée(s) pour &a{players} &7joueur(s), &a{present} &7déjà présente(s)."
+    import-failed: "&7&l« &c&lSH &8&l» &7L'importation a échoué, &cvérifiez la console&7."
+    import-no-network: "&7&l« &c&lSH &8&l» &7Cette commande demande le &cmode réseau &7(SHNetwork installé et base joignable)."
     
 # %shcodex_discovered_count%           - Affiche le nombre total de régions que le joueur a découvertes.
 # %shcodex_total_count%                - Affiche le nombre total de régions configurées et disponibles à la découverte dans le plugin (basé sur regions.yml).
 # %shcodex_is_discovered_<ID_REGION>%  - Vérifie si le joueur a découvert une région spécifique. <ID_REGION> doit être remplacé par l'ID interne de la région tel que défini dans regions.yml (par exemple, arene_pvp, monde_noel).
 # %shcodex_name_<ID_REGION>%           - Affiche le nom d'affichage (formaté avec les couleurs) d'une région spécifique. <ID_REGION> doit être remplacé par l'ID interne de la région.
+
+# Mode réseau. Actif seulement si SHNetwork est installé et 'actif' vaut true : les régions découvertes de chaque joueur
+# sont alors dans la base partagée (table shcodex_discoveries : uuid, region, discovered_at) au lieu de playerdata/, et le
+# nombre de joueurs par région (stats) se compte dans cette même table au lieu de stats.yml. Les régions d'un joueur sont
+# lues à sa connexion, une fois que l'autre serveur a fini de le sauvegarder, puis chaque découverte est écrite aussitôt.
+# Les fichiers playerdata/ et stats.yml ne sont plus lus ni écrits : /codex import les copie une fois dans la base, sans
+# rien écraser. Sans SHNetwork, rien de ceci n'est utilisé. Demande un redémarrage.
+reseau:
+  actif: true
+  # Durée maximale, en secondes, pendant laquelle on attend que l'autre serveur ait fini de sauvegarder
+  # le joueur avant de lire ses régions
+  attente-max-secondes: 10
+  # Canal du bus SHNetwork : chaque serveur y prévient les autres qu'une découverte a changé les stats
+  canal: shcodex
+  # Intervalle, en secondes, entre deux relectures des stats en base (en plus de celle qui suit chaque changement)
+  cache-stats-secondes: 30
+  # Registre des premières connexions du réseau, lu par /codex admin pour retrouver un joueur hors ligne
+  # qui n'est jamais venu sur ce serveur. Vide pour ne pas l'utiliser.
+  table-premieres-connexions: "Global.sh_track_firstseen"
+  base-de-donnees:
+    url: "jdbc:mariadb://127.0.0.1:3306/bo_net"
+    utilisateur: shcodex
+    mot-de-passe: CHANGE_ME
+    # Délai maximal de connexion et de réponse de la base, en millisecondes
+    delai-ms: 3000

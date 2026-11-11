@@ -21,19 +21,32 @@ Utilisé sur : **Opale**.
 ## Dépendances
 
 - Obligatoires : `WorldGuard`
-- Optionnelles : `PlaceholderAPI`
+- Optionnelles : `PlaceholderAPI`, `SHNetwork` (mode réseau)
 
 ## Commandes
 
 | Commande | Alias | Description | Permission |
 |---|---|---|---|
 | `/codex` | `/shcodex`, `/regions` | Ouvre le menu du Codex ou gère le plugin. | — |
+| `/codex reload` | | Recharge les fichiers de configuration et les stats. | `shcodex.admin` |
+| `/codex admin <joueur> <list\|unlock\|lock> [région]` | | Voir, débloquer ou reverrouiller les régions d'un joueur. | `shcodex.admin` |
+| `/codex import` | | Mode réseau : copie `playerdata/` dans la base, sans rien écraser. | `shcodex.admin` |
 
 ## Plusieurs serveurs Opale
 
-SHCodex n'a pas de mode réseau, et n'en a pas besoin pour découvrir les régions : les 21 régions de `regions.yml` sont dans les mondes `spawn`, `arene` et `christmas`, qui n'existent que sur le serveur du spawn, de l'arène et des events. C'est lui qui détecte les découvertes, donne les récompenses et garde seul `playerdata/<uuid>.yml` et `stats.yml`. Aucune région ne peut être découverte sur un autre serveur, donc une récompense de découverte n'y est jamais donnée deux fois.
+Les 21 régions de `regions.yml` sont dans les mondes `spawn`, `arene` et `christmas`, qui n'existent que sur le serveur du spawn, de l'arène et des events : c'est lui qui détecte les découvertes et donne les récompenses.
 
-Sur un autre serveur, `/codex` et les placeholders `%shcodex_...%` ne lisent qu'une copie de `playerdata/` qui n'est pas mise à jour (aucune découverte récente, parfois aucune). Le plus simple est d'y ajouter le monde des îles (`superiorworld`) à `blacklist-worlds` dans `config.yml` : la commande répond alors « Vous ne pouvez pas ouvrir le Codex dans ce monde ». Montrer le codex à jour sur plusieurs serveurs demanderait un stockage partagé des régions découvertes (`INSERT IGNORE` sur le couple joueur et région pour décider qui reçoit la récompense).
+Avec **SHNetwork** installé (et `reseau.actif: true`, valeur par défaut), les données du codex sont partagées par tous les serveurs de jeu :
+
+- les régions découvertes de chaque joueur sont en MariaDB (table `shcodex_discoveries` : `uuid`, `region`, `discovered_at`) au lieu de `playerdata/` ;
+- le nombre de joueurs par région (`{total_discovered}` du menu) se compte dans cette même table au lieu de `stats.yml`, puis il est gardé en mémoire et relu en base après chaque changement (message du bus SHNetwork aux autres serveurs) et toutes les 30 secondes ;
+- à la connexion, une fois que l'autre serveur a fini de sauvegarder le joueur, ses régions sont lues en base (la lecture commence à la pré-connexion, sans la bloquer ; en attendant, ses déplacements ne découvrent rien) ;
+- chaque découverte est écrite en base tout de suite, ligne par ligne (`INSERT IGNORE` : deux serveurs ne comptent jamais deux fois la même région), avant que le joueur ne puisse changer de serveur ;
+- `/codex` et les placeholders `%shcodex_...%` montrent donc les mêmes données sur tous les serveurs, et il n'y a plus besoin de fermer `/codex` sur les îles avec `blacklist-worlds` ;
+- `/codex admin <joueur> list|unlock|lock` : un joueur connecté sur un autre serveur reçoit `unlock` et `lock` là où se trouve sa mémoire, `list` lit la base ; un joueur hors ligne est lu et modifié directement en base (il est retrouvé par ce serveur ou par `reseau.table-premieres-connexions`) ;
+- `/codex import` copie une fois `playerdata/<uuid>.yml` dans la base (rien n'est écrasé : on peut le relancer). `playerdata/` et `stats.yml` ne sont plus ni lus ni écrits en mode réseau.
+
+Sans SHNetwork, ou avec `reseau.actif: false`, ou sans les clés `reseau` dans la configuration, le plugin se comporte comme avant : `playerdata/` et `stats.yml`. Si la base est injoignable au démarrage, il reste en mode local. Les tables se créent toutes seules, ou à la main avec `sql/schema.sql`.
 
 ## Permissions
 
@@ -51,8 +64,12 @@ Fichiers par défaut repris du serveur (secrets remplacés par `CHANGE_ME`). Cli
 plugins/SHCodex/
 ├── <a href="src/main/resources/config.yml">config.yml</a>
 ├── <a href="src/main/resources/menu.yml">menu.yml</a>
-└── <a href="src/main/resources/regions.yml">regions.yml</a>
+├── <a href="src/main/resources/regions.yml">regions.yml</a>
+├── playerdata/ <i>(un fichier par joueur ; mode normal)</i>
+└── stats.yml <i>(mode normal)</i>
 </pre>
+
+Le fichier `sql/schema.sql` du dépôt crée les tables du mode réseau.
 
 ## Compilation
 

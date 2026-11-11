@@ -9,6 +9,10 @@ import org.Cry_Legende.sHCodex.config.ConfigManager;
 import org.Cry_Legende.sHCodex.listener.MenuListener;
 import org.Cry_Legende.sHCodex.listener.PlayerRegionListener;
 import org.Cry_Legende.sHCodex.menu.MenuManager;
+import org.Cry_Legende.sHCodex.network.CodexDatabase;
+import org.Cry_Legende.sHCodex.network.NetworkCodex;
+import org.Cry_Legende.sHCodex.network.NetworkLink;
+import org.Cry_Legende.sHCodex.network.ShNetworkLink;
 import org.Cry_Legende.sHCodex.placeholder.SHCodexExpansion;
 import org.Cry_Legende.sHCodex.playerdata.PlayerDataManager;
 import org.Cry_Legende.sHCodex.stats.StatsManager;
@@ -17,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.time.Duration;
 import java.util.logging.Level;
 
 public class SHCodex extends JavaPlugin {
@@ -27,6 +32,8 @@ public class SHCodex extends JavaPlugin {
     private PlayerDataManager playerDataManager;
     private StatsManager statsManager;
     private WorldGuard worldGuard;
+    // Non nul seulement avec SHNetwork : les régions découvertes sont dans la base partagée
+    private NetworkCodex network;
 
     public static StateFlag CODEX_REGION_FLAG;
 
@@ -70,9 +77,13 @@ public class SHCodex extends JavaPlugin {
 
         // Initialisation des managers
         configManager = new ConfigManager(this);
-        playerDataManager = new PlayerDataManager(this);
+        enableNetwork();
+        playerDataManager = new PlayerDataManager(this, network);
         menuManager = new MenuManager(this);
-        statsManager = new StatsManager(this);
+        statsManager = new StatsManager(this, network);
+        if (network != null) {
+            network.start(playerDataManager::flushPlayer, statsManager::applyCounts);
+        }
 
         // Lancement du calcul initial des stats si ce n'est pas déjà fait
         if (!statsManager.hasInitialCalculationBeenDone()) {
@@ -108,7 +119,44 @@ public class SHCodex extends JavaPlugin {
         if (statsManager != null) {
             statsManager.saveStats();
         }
+        if (network != null) {
+            network.stop(); // termine les écritures en cours
+        }
         getLogger().info("SHCodex has been disabled.");
+    }
+
+    /**
+     * Passe en mode réseau si SHNetwork est installé et 'reseau.actif' est vrai. Les classes qui touchent à SHNetwork
+     * ne sont chargées qu'ici : sans lui, le plugin se comporte exactement comme avant (playerdata/ et stats.yml).
+     */
+    private void enableNetwork() {
+        org.bukkit.configuration.file.FileConfiguration config = configManager.getRawConfig();
+        if (!config.getBoolean("reseau.actif", true)) return;
+        if (!Bukkit.getPluginManager().isPluginEnabled("SHNetwork")) return;
+        CodexDatabase db = null;
+        try {
+            NetworkLink link = ShNetworkLink.open();
+            db = new CodexDatabase(
+                config.getString("reseau.base-de-donnees.url", ""),
+                config.getString("reseau.base-de-donnees.utilisateur", ""),
+                config.getString("reseau.base-de-donnees.mot-de-passe", ""),
+                Math.max(250, config.getInt("reseau.base-de-donnees.delai-ms", 3000)));
+            db.createTable();
+            Duration wait = Duration.ofSeconds(Math.max(1, config.getInt("reseau.attente-max-secondes", 10)));
+            String channel = config.getString("reseau.canal", "shcodex").toLowerCase();
+            String registry = config.getString("reseau.table-premieres-connexions", "");
+            if (!registry.matches("[A-Za-z0-9_.]*")) {
+                getLogger().warning("reseau.table-premieres-connexions ignorée (nom de table invalide) : " + registry);
+                registry = "";
+            }
+            network = new NetworkCodex(this, db, link, wait, channel,
+                config.getInt("reseau.cache-stats-secondes", 30), registry);
+            getLogger().info("SHNetwork détecté : les régions découvertes et les stats sont dans la base partagée.");
+        } catch (Exception | LinkageError e) {
+            network = null;
+            if (db != null) db.close();
+            getLogger().log(Level.SEVERE, "SHNetwork présent mais inutilisable, codex local à ce serveur : " + e);
+        }
     }
 
     private void registerCommands() {
@@ -143,6 +191,11 @@ public class SHCodex extends JavaPlugin {
 
     public StatsManager getStatsManager() {
         return statsManager;
+    }
+
+    /** Le mode réseau, ou null sans SHNetwork. */
+    public NetworkCodex getNetwork() {
+        return network;
     }
 
     public WorldGuard getWorldGuard() {

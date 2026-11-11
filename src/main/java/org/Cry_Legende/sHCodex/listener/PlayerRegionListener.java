@@ -78,7 +78,8 @@ public class PlayerRegionListener implements Listener {
                             plugin.getStatsManager().saveStats();
                             // Le fichier du joueur suit le compteur : sans cela, un arrêt brutal ferait perdre la
                             // découverte (récompensée et comptée une seconde fois à la reconnexion)
-                            plugin.getPlayerDataManager().savePlayerDataAsync(player.getUniqueId());
+                            // (en mode réseau : écrit en base, ligne par ligne, et les autres serveurs sont prévenus)
+                            plugin.getPlayerDataManager().regionDiscovered(player.getUniqueId(), codexRegionId);
 
                             plugin.getLogger().info(player.getName() + " discovered region: " + codexRegionId);
                             executeRewards(player, regionConfig);

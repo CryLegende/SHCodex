@@ -8,11 +8,17 @@ depend:
   - WorldGuard # Essentiel pour la détection des régions
 softdepend:
   - PlaceholderAPI # Pour les placeholders dans les messages, menus, etc.
+  - SHNetwork # Facultatif : sans lui, les régions découvertes restent dans playerdata/ et stats.yml comme avant
+# Chargées par Paper dans le classloader du plugin : le serveur n'embarque que les pilotes MySQL et SQLite.
+# Seul le mode réseau (régions découvertes en MariaDB) s'en sert.
+libraries:
+  - com.zaxxer:HikariCP:5.1.0
+  - org.mariadb.jdbc:mariadb-java-client:3.4.1
 
 commands:
   codex:
     description: Ouvre le menu du Codex ou gère le plugin.
-    usage: /codex [reload]
+    usage: /codex [reload|import]
     aliases: [shcodex, regions] # Tu peux garder ou enlever cet alias
 
 permissions:

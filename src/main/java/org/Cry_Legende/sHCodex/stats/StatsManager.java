@@ -1,6 +1,7 @@
 package org.Cry_Legende.sHCodex.stats;
 
 import org.Cry_Legende.sHCodex.SHCodex;
+import org.Cry_Legende.sHCodex.network.NetworkCodex;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,9 +19,12 @@ public class StatsManager {
     private final File statsFile;
     private FileConfiguration statsConfig;
     private final Map<String, Integer> discoveryCounts = new ConcurrentHashMap<>();
+    // Non nul seulement avec SHNetwork : les stats se comptent dans la base partagée, stats.yml n'est pas utilisé
+    private final NetworkCodex network;
 
-    public StatsManager(SHCodex plugin) {
+    public StatsManager(SHCodex plugin, NetworkCodex network) {
         this.plugin = plugin;
+        this.network = network;
         this.statsFile = new File(plugin.getDataFolder(), "stats.yml");
         loadStats();
     }
@@ -29,6 +33,10 @@ public class StatsManager {
      * Charge les statistiques depuis le fichier stats.yml.
      */
     public void loadStats() {
+        if (network != null) {
+            network.refreshStats(); // mode réseau : relues en base, appliquées par applyCounts
+            return;
+        }
         if (!statsFile.exists()) {
             try {
                 statsFile.createNewFile();
@@ -50,6 +58,7 @@ public class StatsManager {
      * Sauvegarde les statistiques actuelles dans le fichier stats.yml.
      */
     public void saveStats() {
+        if (network != null) return; // mode réseau : les stats se comptent en base
         // Met à jour la config en mémoire avant de sauvegarder pour ne rien écraser
         statsConfig.set("discovery-counts", null); // Vide l'ancienne section
         for (Map.Entry<String, Integer> entry : discoveryCounts.entrySet()) {
@@ -68,6 +77,7 @@ public class StatsManager {
      * @return true si le calcul a déjà été fait, false sinon.
      */
     public boolean hasInitialCalculationBeenDone() {
+        if (network != null) return true; // mode réseau : pas de recalcul, la base compte les joueurs de chaque région
         return statsConfig.getBoolean("stats-recalculated", false);
     }
 
@@ -120,6 +130,15 @@ public class StatsManager {
      */
     private void markCalculationAsDone() {
         statsConfig.set("stats-recalculated", true);
+    }
+
+    /**
+     * Mode réseau : remplace les compteurs par ceux de la base (appelé hors du fil principal, sans jamais laisser la map
+     * vide pendant le remplacement).
+     */
+    public void applyCounts(Map<String, Integer> counts) {
+        discoveryCounts.putAll(counts);
+        discoveryCounts.keySet().retainAll(counts.keySet());
     }
 
     public int getDiscoveryCount(String regionId) {

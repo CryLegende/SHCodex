@@ -1,6 +1,7 @@
 package org.Cry_Legende.sHCodex.playerdata;
 
 import org.Cry_Legende.sHCodex.SHCodex;
+import org.Cry_Legende.sHCodex.network.NetworkCodex;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,7 +16,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -25,9 +28,12 @@ public class PlayerDataManager implements Listener {
     // Concurrente : chargée/sauvegardée en asynchrone (join/quit), lue sur le thread principal et par PlaceholderAPI
     private final Map<UUID, PlayerData> playerDataMap = new ConcurrentHashMap<>();
     private final File playerDataFolder;
+    // Non nul seulement avec SHNetwork : les régions découvertes sont dans la base partagée, pas dans playerdata/
+    private final NetworkCodex network;
 
-    public PlayerDataManager(SHCodex plugin) {
+    public PlayerDataManager(SHCodex plugin, NetworkCodex network) {
         this.plugin = plugin;
+        this.network = network;
         this.playerDataFolder = new File(plugin.getDataFolder(), "playerdata");
         if (!playerDataFolder.exists()) {
             playerDataFolder.mkdirs();
@@ -53,6 +59,10 @@ public class PlayerDataManager implements Listener {
     public void loadPlayerData(UUID uuid) {
         if (playerDataMap.containsKey(uuid)) {
             return; // Déjà chargé
+        }
+        if (network != null) {
+            beginNetworkJoin(uuid); // lecture en base, hors du fil principal
+            return;
         }
 
         File playerFile = new File(playerDataFolder, uuid.toString() + ".yml");
@@ -80,6 +90,7 @@ public class PlayerDataManager implements Listener {
      * @param uuid L'UUID du joueur à sauvegarder.
      */
     public void savePlayerData(UUID uuid) {
+        if (network != null) return; // mode réseau : chaque changement est écrit en base tout de suite
         PlayerData data = playerDataMap.get(uuid);
         if (data == null) return;
         writePlayerData(uuid, data);
@@ -90,6 +101,7 @@ public class PlayerDataManager implements Listener {
      * ne fasse pas perdre une découverte déjà récompensée (elle serait récompensée une seconde fois).
      */
     public void savePlayerDataAsync(UUID uuid) {
+        if (network != null) return; // mode réseau : chaque changement est écrit en base tout de suite
         PlayerData data = playerDataMap.get(uuid);
         if (data == null || !plugin.isEnabled()) return;
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> writePlayerData(uuid, data));
@@ -120,6 +132,7 @@ public class PlayerDataManager implements Listener {
      * Sauvegarde les données de tous les joueurs actuellement chargés.
      */
     public void saveAllPlayerData() {
+        if (network != null) return; // mode réseau : rien dans playerdata/, les écritures en base se terminent à l'arrêt
         plugin.getLogger().info("Saving all loaded player data...");
         for (Map.Entry<UUID, PlayerData> entry : playerDataMap.entrySet()) {
             writePlayerData(entry.getKey(), entry.getValue());
@@ -142,6 +155,10 @@ public class PlayerDataManager implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        if (network != null) {
+            beginNetworkJoin(player.getUniqueId());
+            return;
+        }
         // Charger les données de manière asynchrone pour éviter de lagger le thread principal
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             loadPlayerData(player.getUniqueId());
@@ -151,6 +168,7 @@ public class PlayerDataManager implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        if (network != null) return; // mode réseau : la tâche de sauvegarde de SHNetwork s'en charge (flushPlayer)
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         String name = player.getName();
@@ -169,5 +187,63 @@ public class PlayerDataManager implements Listener {
                 plugin.getLogger().info("Player data for " + name + " saved and unloaded.");
             });
         });
+    }
+
+    // ------------------------------------------------------------------ mode réseau
+
+    /**
+     * Mode réseau : charge les régions du joueur qui arrive. Elles sont lues en base une fois que l'autre serveur a fini
+     * de le sauvegarder (lecture lancée à la pré-connexion) ; jusqu'à la fin de la lecture, le joueur n'a pas de données
+     * ici (rien ne se découvre, le menu s'excuse). Les données remplacent toujours celles d'une session précédente.
+     */
+    private void beginNetworkJoin(UUID uuid) {
+        Optional<Map<String, Long>> loaded = network.takePreloaded(uuid);
+        if (loaded.isPresent()) {
+            playerDataMap.put(uuid, new PlayerData(loaded.get()));
+            return;
+        }
+        network.loadLater(uuid, regions -> {
+            if (Bukkit.getPlayer(uuid) != null) { // parti entre-temps : ses données ne reviennent pas
+                playerDataMap.put(uuid, new PlayerData(regions));
+            }
+        });
+    }
+
+    /**
+     * Mode réseau, au départ du joueur (fil principal) : oublie ses données ; le futur se termine quand les écritures
+     * déjà demandées pour lui sont faites, avant que l'autre serveur ne les lise.
+     */
+    public CompletableFuture<Void> flushPlayer(Player player) {
+        playerDataMap.remove(player.getUniqueId());
+        return network.flush();
+    }
+
+    /** Une région vient d'être découverte en jeu : écrite en base (mode réseau) ou dans le fichier du joueur. */
+    public void regionDiscovered(UUID uuid, String regionId) {
+        if (network == null) {
+            savePlayerDataAsync(uuid);
+            return;
+        }
+        PlayerData data = playerDataMap.get(uuid);
+        Long at = data == null ? null : data.getDiscoveryTimestamp(regionId);
+        network.recordDiscovery(uuid, regionId, at != null ? at : System.currentTimeMillis());
+    }
+
+    /** Une région vient d'être débloquée par un administrateur (joueur de ce serveur). */
+    public void regionUnlocked(UUID uuid, String regionId) {
+        if (network == null) {
+            savePlayerData(uuid);
+            return;
+        }
+        regionDiscovered(uuid, regionId);
+    }
+
+    /** Une région vient d'être reverrouillée par un administrateur (joueur de ce serveur). */
+    public void regionLocked(UUID uuid, String regionId) {
+        if (network == null) {
+            savePlayerData(uuid);
+            return;
+        }
+        network.recordLock(uuid, regionId);
     }
 }
