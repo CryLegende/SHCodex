@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,7 +53,7 @@ public class CodexAdminCommand {
             }
             target = online;
         } else {
-            target = Bukkit.getOfflinePlayer(playerName);
+            target = resolveTarget(playerName);
 
             if (!target.hasPlayedBefore() && !target.isOnline()) {
                 sender.sendMessage(plugin.getConfigManager().getAdminPlayerNotFoundMessage().replace("{player}", playerName));
@@ -60,12 +61,15 @@ public class CodexAdminCommand {
             }
         }
 
+        // Un joueur hors ligne résolu par son UUID n'a pas toujours son pseudo en cache : on garde celui qui a été tapé
+        String targetName = target.getName() != null ? target.getName() : playerName;
+
         plugin.getPlayerDataManager().loadPlayerData(target.getUniqueId()); // S'assure que les données (même offline) sont chargées
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(target.getUniqueId());
         if (playerData == null) { // mode réseau : joueur arrivé à l'instant, ses régions sont encore en cours de lecture
             sender.sendMessage(plugin.getConfigManager().adminMessage("loading",
                 "&7&l« &e&lSH &8&l» &7Le codex de &e{player} &7est en cours de chargement, réessaie dans un instant.")
-                .replace("{player}", target.getName()));
+                .replace("{player}", targetName));
             return true;
         }
 
@@ -73,15 +77,15 @@ public class CodexAdminCommand {
 
         switch (action) {
             case "list":
-                handleList(sender, target.getName(), playerData);
+                handleList(sender, targetName, playerData);
                 break;
 
             case "unlock":
-                handleUnlock(sender, target, playerData, args);
+                handleUnlock(sender, target, targetName, playerData, args);
                 break;
 
             case "lock":
-                handleLock(sender, target, playerData, args);
+                handleLock(sender, target, targetName, playerData, args);
                 break;
 
             default:
@@ -94,6 +98,22 @@ public class CodexAdminCommand {
         }
 
         return true;
+    }
+
+    /**
+     * Résout le joueur visé sans requête Mojang. Bukkit.getOfflinePlayer(String) interroge Mojang sur le fil principal quand
+     * le pseudo n'est pas en cache (gels de plusieurs secondes) et rend l'UUID premium des comptes originaux, alors que le
+     * réseau range tous les joueurs sous leur UUID hors ligne (md5 de "OfflinePlayer:" + pseudo).
+     */
+    private OfflinePlayer resolveTarget(String playerName) {
+        Player online = Bukkit.getPlayerExact(playerName);
+        if (online != null) {
+            return online;
+        }
+        // Le cache de pseudos rétablit la casse exacte, qui change l'UUID hors ligne (jamais de requête réseau)
+        OfflinePlayer cached = Bukkit.getOfflinePlayerIfCached(playerName);
+        String exactName = cached != null && cached.getName() != null ? cached.getName() : playerName;
+        return Bukkit.getOfflinePlayer(UUID.nameUUIDFromBytes(("OfflinePlayer:" + exactName).getBytes(StandardCharsets.UTF_8)));
     }
 
     private void handleList(CommandSender sender, String playerName, PlayerData playerData) {
@@ -120,7 +140,7 @@ public class CodexAdminCommand {
             });
     }
 
-    private void handleUnlock(CommandSender sender, OfflinePlayer target, PlayerData playerData, String[] args) {
+    private void handleUnlock(CommandSender sender, OfflinePlayer target, String targetName, PlayerData playerData, String[] args) {
         if (args.length < 4) {
             sender.sendMessage(plugin.getConfigManager().getAdminUsageMessage());
             return;
@@ -135,7 +155,7 @@ public class CodexAdminCommand {
 
         if (playerData.hasDiscovered(regionId)) {
             sender.sendMessage(plugin.getConfigManager().getAdminAlreadyUnlockedMessage()
-                .replace("{player}", target.getName())
+                .replace("{player}", targetName)
                 .replace("{region_name}", regionConfig.getDisplayName()));
             return;
         }
@@ -146,11 +166,11 @@ public class CodexAdminCommand {
         plugin.getStatsManager().saveStats(); // Sauvegarde immédiate
 
         sender.sendMessage(plugin.getConfigManager().getAdminUnlockSuccessMessage()
-            .replace("{player}", target.getName())
+            .replace("{player}", targetName)
             .replace("{region_name}", regionConfig.getDisplayName()));
     }
 
-    private void handleLock(CommandSender sender, OfflinePlayer target, PlayerData playerData, String[] args) {
+    private void handleLock(CommandSender sender, OfflinePlayer target, String targetName, PlayerData playerData, String[] args) {
         if (args.length < 4) {
             sender.sendMessage(plugin.getConfigManager().getAdminUsageMessage());
             return;
@@ -165,7 +185,7 @@ public class CodexAdminCommand {
 
         if (!playerData.hasDiscovered(regionId)) {
             sender.sendMessage(plugin.getConfigManager().getAdminNotYetUnlockedMessage()
-                .replace("{player}", target.getName())
+                .replace("{player}", targetName)
                 .replace("{region_name}", regionConfig.getDisplayName()));
             return;
         }
@@ -176,7 +196,7 @@ public class CodexAdminCommand {
         plugin.getStatsManager().saveStats(); // Sauvegarde immédiate
 
         sender.sendMessage(plugin.getConfigManager().getAdminLockSuccessMessage()
-            .replace("{player}", target.getName())
+            .replace("{player}", targetName)
             .replace("{region_name}", regionConfig.getDisplayName()));
     }
 
