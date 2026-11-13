@@ -240,7 +240,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 } # Volume ajusté
 
   henri:
@@ -272,7 +272,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   meilleurs_joueurs:
@@ -299,7 +299,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   cookie_clicker:
@@ -326,7 +326,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   jump_principal: # Renommé pour éviter confusion avec jump_secret
@@ -352,7 +352,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   duel_1vs1:
@@ -378,7 +378,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   jump_secret:
@@ -403,7 +403,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 25" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   mona_lisa:
@@ -430,7 +430,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   bibliotheque:
@@ -456,7 +456,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   candy:
@@ -482,7 +482,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 25" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   japon:
@@ -509,7 +509,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 25" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   escargot:
@@ -536,7 +536,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 25" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+25 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   egout:
@@ -562,7 +562,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   nether:
@@ -587,7 +587,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   navire:
@@ -613,7 +613,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   grotte:
@@ -640,7 +640,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   rat:
@@ -667,7 +667,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   cheminee:
@@ -693,7 +693,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   usine:
@@ -719,7 +719,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 10" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+10 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   poisson:
@@ -744,7 +744,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
   christmas:
@@ -770,7 +770,7 @@ regions:
       message_3: { type: "MESSAGE", value: "&7&l« &d&lSH &8&l» &fListe des régions: &c/codex" }
       message_4: { type: "MESSAGE", value: " " }
       cmd_1: { type: "COMMAND", value: "shnetworklevel exp give {player} 50" }
-      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network &7(/network)" }
+      cmd_2: { type: "COMMAND", value: "sm {player} &b+50 exp de network%shnetworklevel_bonus_texte% &7(/network)" }
       sound: { type: "SOUND", value: "BLOCK_GILDED_BLACKSTONE_STEP", volume: 1.0, pitch: 0.1 }
 
 
