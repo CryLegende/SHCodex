@@ -58,7 +58,7 @@ Sans SHNetwork, ou avec `reseau.actif: false`, ou sans les clés `reseau` dans l
 
 ## Configuration
 
-Fichiers par défaut repris du serveur (secrets remplacés par `CHANGE_ME`). Cliquez sur un fichier pour l'ouvrir :
+Fichiers par défaut, avec des valeurs d'exemple. Cliquez sur un fichier pour l'ouvrir :
 
 <pre>
 plugins/SHCodex/
