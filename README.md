@@ -34,7 +34,7 @@ Utilisé sur : **Opale**.
 
 ## Plusieurs serveurs Opale
 
-Les 21 régions de `regions.yml` sont dans les mondes `spawn`, `arene` et `christmas`, qui n'existent que sur le serveur du spawn, de l'arène et des events : c'est lui qui détecte les découvertes et donne les récompenses.
+Les régions de `regions.yml` sont dans des mondes qui n'existent que sur un seul serveur (celui du spawn) : c'est lui qui détecte les découvertes et donne les récompenses.
 
 Avec **SHNetwork** installé (et `reseau.actif: true`, valeur par défaut), les données du codex sont partagées par tous les serveurs de jeu :
 

@@ -16,8 +16,8 @@
 #
 # Placeholders : %shcodex_discovered_count%, %shcodex_total_count%, %shcodex_is_discovered_<région>%, %shcodex_name_<région>%.
 #
-# Plusieurs serveurs Opale : toutes les régions de regions.yml sont dans les mondes spawn, arene et christmas, qui
-# n'existent que sur le serveur du spawn, c'est lui qui détecte les découvertes et donne les récompenses. Avec SHNetwork
+# Plusieurs serveurs Opale : toutes les régions de regions.yml sont dans des mondes qui n'existent que sur le serveur
+# du spawn, c'est lui qui détecte les découvertes et donne les récompenses. Avec SHNetwork
 # (voir la section 'reseau' en bas du fichier), les régions découvertes de chaque joueur et les stats sont dans une base
 # partagée : /codex et les placeholders montrent les mêmes données sur tous les serveurs. Sans SHNetwork, rien ne change :
 # playerdata/ et stats.yml restent sur ce serveur-là (et sur un autre serveur, /codex ne lirait qu'une copie de playerdata/
@@ -27,8 +27,7 @@
 
 # Mondes où la commande /codex ne peut pas être utilisée
 blacklist-worlds:
-  - "arene"
-  - "Revent"
+  - "world_the_end"
   # - "another_world_blacklisted"
 
 messages:
@@ -59,7 +58,7 @@ messages:
     
 # %shcodex_discovered_count%           - Affiche le nombre total de régions que le joueur a découvertes.
 # %shcodex_total_count%                - Affiche le nombre total de régions configurées et disponibles à la découverte dans le plugin (basé sur regions.yml).
-# %shcodex_is_discovered_<ID_REGION>%  - Vérifie si le joueur a découvert une région spécifique. <ID_REGION> doit être remplacé par l'ID interne de la région tel que défini dans regions.yml (par exemple, arene_pvp, monde_noel).
+# %shcodex_is_discovered_<ID_REGION>%  - Vérifie si le joueur a découvert une région spécifique. <ID_REGION> doit être remplacé par l'ID interne de la région tel que défini dans regions.yml (par exemple, spawn, grotte).
 # %shcodex_name_<ID_REGION>%           - Affiche le nom d'affichage (formaté avec les couleurs) d'une région spécifique. <ID_REGION> doit être remplacé par l'ID interne de la région.
 
 # Mode réseau. Actif seulement si SHNetwork est installé et 'actif' vaut true : les régions découvertes de chaque joueur
@@ -79,9 +78,9 @@ reseau:
   cache-stats-secondes: 30
   # Registre des premières connexions du réseau, lu par /codex admin pour retrouver un joueur hors ligne
   # qui n'est jamais venu sur ce serveur. Vide pour ne pas l'utiliser.
-  table-premieres-connexions: "Global.sh_track_firstseen"
+  table-premieres-connexions: "minecraft.sh_track_firstseen"
   base-de-donnees:
-    url: "jdbc:mariadb://127.0.0.1:3306/bo_net"
+    url: "jdbc:mariadb://127.0.0.1:3306/minecraft"
     utilisateur: shcodex
     mot-de-passe: CHANGE_ME
     # Délai maximal de connexion et de réponse de la base, en millisecondes
