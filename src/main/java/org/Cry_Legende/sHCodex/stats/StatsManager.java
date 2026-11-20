@@ -51,7 +51,6 @@ public class StatsManager {
                 discoveryCounts.put(regionId, statsConfig.getInt("discovery-counts." + regionId));
             }
         }
-        plugin.getLogger().info("Loaded " + discoveryCounts.size() + " region discovery stats.");
     }
 
     /**

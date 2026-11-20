@@ -44,17 +44,14 @@ public class SHCodex extends JavaPlugin {
         com.sk89q.worldguard.protection.flags.Flag<?> existingFlag = registry.get(flagName);
 
         if (existingFlag == null) {
-            getLogger().info("WorldGuard flag '" + flagName + "' not found. Registering it now.");
             try {
                 StateFlag flag = new StateFlag(flagName, true);
                 registry.register(flag);
                 CODEX_REGION_FLAG = flag;
-                getLogger().info("Custom WorldGuard flag '" + flagName + "' registered successfully.");
             } catch (FlagConflictException e) {
                 getLogger().log(Level.SEVERE, "A flag conflict occurred while trying to register '" + flagName + "'. This is unexpected.", e);
             }
         } else {
-            getLogger().info("WorldGuard flag '" + flagName + "' already exists. Retrieving it.");
             if (existingFlag instanceof StateFlag) {
                 CODEX_REGION_FLAG = (StateFlag) existingFlag;
             } else {
@@ -73,7 +70,6 @@ public class SHCodex extends JavaPlugin {
             return;
         }
         worldGuard = WorldGuard.getInstance();
-        getLogger().info("WorldGuard found and hooked.");
 
         // Initialisation des managers
         configManager = new ConfigManager(this);
@@ -96,19 +92,14 @@ public class SHCodex extends JavaPlugin {
         // Intégration avec PlaceholderAPI
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new SHCodexExpansion(this).register();
-            getLogger().info("PlaceholderAPI found. Placeholders registered.");
         } else {
             getLogger().warning("PlaceholderAPI not found. Some features might be limited.");
         }
 
         // Gestion du rechargement à chaud (PlugMan)
-        getLogger().info("Loading data for all currently online players...");
         for (Player player : Bukkit.getOnlinePlayers()) {
             playerDataManager.loadPlayerData(player.getUniqueId());
         }
-        getLogger().info("Finished loading online player data.");
-
-        getLogger().info("SHCodex has been enabled!");
     }
 
     @Override
@@ -122,7 +113,6 @@ public class SHCodex extends JavaPlugin {
         if (network != null) {
             network.stop(); // termine les écritures en cours
         }
-        getLogger().info("SHCodex has been disabled.");
     }
 
     /**

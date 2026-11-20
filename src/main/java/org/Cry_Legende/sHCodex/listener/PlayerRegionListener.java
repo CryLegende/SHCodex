@@ -81,7 +81,6 @@ public class PlayerRegionListener implements Listener {
                             // (en mode réseau : écrit en base, ligne par ligne, et les autres serveurs sont prévenus)
                             plugin.getPlayerDataManager().regionDiscovered(player.getUniqueId(), codexRegionId);
 
-                            plugin.getLogger().info(player.getName() + " discovered region: " + codexRegionId);
                             executeRewards(player, regionConfig);
                         }
                     }

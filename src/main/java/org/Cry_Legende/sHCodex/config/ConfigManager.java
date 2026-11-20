@@ -171,7 +171,7 @@ public class ConfigManager {
         }
         regionConfigs = loaded;
         regionsByWorldGuardId = byWorldGuardId;
-        plugin.getLogger().info("Loaded " + regionConfigs.size() + " region configurations.");
+        plugin.getLogger().info(regionConfigs.size() + " région(s) chargée(s).");
     }
 
     private void loadMenuConfig() {
@@ -219,9 +219,7 @@ public class ConfigManager {
                     regionItemSlots.add(i);
                 }
             }
-            plugin.getLogger().info("No 'region-item-slots' defined in menu.yml. Dynamically filling available slots.");
         }
-        plugin.getLogger().info("Loaded menu configuration. Title: " + menuTitle);
     }
 
     public void reloadConfigs() {

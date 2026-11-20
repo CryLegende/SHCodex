@@ -133,11 +133,9 @@ public class PlayerDataManager implements Listener {
      */
     public void saveAllPlayerData() {
         if (network != null) return; // mode réseau : rien dans playerdata/, les écritures en base se terminent à l'arrêt
-        plugin.getLogger().info("Saving all loaded player data...");
         for (Map.Entry<UUID, PlayerData> entry : playerDataMap.entrySet()) {
             writePlayerData(entry.getKey(), entry.getValue());
         }
-        plugin.getLogger().info("All player data saved.");
     }
 
     /**
@@ -162,7 +160,6 @@ public class PlayerDataManager implements Listener {
         // Charger les données de manière asynchrone pour éviter de lagger le thread principal
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             loadPlayerData(player.getUniqueId());
-            plugin.getLogger().info("Player data for " + player.getName() + " loaded.");
         });
     }
 
@@ -171,7 +168,6 @@ public class PlayerDataManager implements Listener {
         if (network != null) return; // mode réseau : la tâche de sauvegarde de SHNetwork s'en charge (flushPlayer)
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-        String name = player.getName();
         PlayerData data = playerDataMap.get(uuid);
         if (data == null) return;
         // Sauvegarder de manière asynchrone, puis décharger sur le thread principal seulement si le joueur ne
@@ -184,7 +180,6 @@ public class PlayerDataManager implements Listener {
                 if (Bukkit.getPlayer(uuid) == null) {
                     playerDataMap.remove(uuid, data);
                 }
-                plugin.getLogger().info("Player data for " + name + " saved and unloaded.");
             });
         });
     }
