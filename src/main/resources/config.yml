@@ -30,6 +30,14 @@ blacklist-worlds:
   - "world_the_end"
   # - "another_world_blacklisted"
 
+# Découvertes à pied : un joueur amené par un autre joueur (/tpa, /tpahere : il arrive à « rayon-arrivee » blocs d'un
+# autre joueur) ne découvre rien tant qu'il n'a pas marché « distance-liberation » blocs depuis son point d'arrivée ou
+# changé de monde. Les warps, le spawn, l'île et la téléportation du /codex ne sont pas concernés.
+# rayon-arrivee: 0 = désactivé.
+decouverte:
+  rayon-arrivee: 1.5
+  distance-liberation: 12
+
 messages:
   no-permission: "&8&l« &f&lSH &8&l» &fCommande inconnue, essayer autre chose"
   reload: "&7&l« &a&lSH &8&l» &7Configuration de &aSHCodex &7rechargée &aavec succès"

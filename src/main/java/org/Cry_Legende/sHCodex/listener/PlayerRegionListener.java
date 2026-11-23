@@ -21,15 +21,50 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerRegionListener implements Listener {
 
     private final SHCodex plugin;
+    /**
+     * Joueurs amenés par un autre joueur (/tpa, /tpahere…) : point d'arrivée. Aucune découverte tant qu'ils n'ont pas
+     * marché « decouverte.distance-liberation » blocs depuis ce point (ou changé de monde) : un ami ne peut pas débloquer
+     * les lieux à leur place. Pas vidé à la déconnexion, sinon se reconnecter suffirait.
+     */
+    private final Map<UUID, Location> pulled = new ConcurrentHashMap<>();
 
     public PlayerRegionListener(SHCodex plugin) {
         this.plugin = plugin;
+    }
+
+    /**
+     * Téléportation qui arrive sur un autre joueur (à « decouverte.rayon-arrivee » blocs) : le joueur a été amené par
+     * quelqu'un. Les autres téléportations (warp, spawn, codex, île) ne bloquent rien.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onTeleport(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
+        Location to = event.getTo();
+        if (to == null || to.getWorld() == null) {
+            return;
+        }
+        double radius = plugin.getConfig().getDouble("decouverte.rayon-arrivee", 1.5);
+        if (radius <= 0) {
+            pulled.remove(player.getUniqueId());
+            return;
+        }
+        double r2 = radius * radius;
+        for (Player other : to.getWorld().getPlayers()) {
+            if (!other.equals(player) && other.getLocation().distanceSquared(to) <= r2) {
+                pulled.put(player.getUniqueId(), to.clone());
+                return;
+            }
+        }
+        pulled.remove(player.getUniqueId());
     }
 
     // MONITOR + ignoreCancelled : on lit la position d'arrivée, valable seulement si le déplacement a bien lieu
@@ -41,6 +76,16 @@ public class PlayerRegionListener implements Listener {
 
         if (to == null || (from.getBlockX() == to.getBlockX() && from.getBlockY() == to.getBlockY() && from.getBlockZ() == to.getBlockZ())) {
             return; // Le joueur n'a pas changé de bloc
+        }
+
+        Location arrival = pulled.get(player.getUniqueId());
+        if (arrival != null) {
+            double free = plugin.getConfig().getDouble("decouverte.distance-liberation", 12);
+            if (arrival.getWorld() != to.getWorld() || arrival.distanceSquared(to) >= free * free) {
+                pulled.remove(player.getUniqueId());
+            } else {
+                return; // Amené par un autre joueur : il doit d'abord explorer à pied
+            }
         }
 
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player.getUniqueId());
