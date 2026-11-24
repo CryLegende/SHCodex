@@ -31,3 +31,6 @@ permissions:
   shcodex.discover.*: # Permission globale pour découvrir toutes les régions
     description: Permet de découvrir toutes les régions du Codex.
     default: true # Ou op, ou false si tu veux gérer par région individuellement
+  shcodex.teleportation.libre:
+    description: Téléportation sur un joueur jamais refusée, même vers une zone pas encore découverte.
+    default: op

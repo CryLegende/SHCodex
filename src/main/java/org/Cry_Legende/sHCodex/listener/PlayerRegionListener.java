@@ -23,48 +23,85 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerRegionListener implements Listener {
 
     private final SHCodex plugin;
-    /**
-     * Joueurs amenés par un autre joueur (/tpa, /tpahere…) : point d'arrivée. Aucune découverte tant qu'ils n'ont pas
-     * marché « decouverte.distance-liberation » blocs depuis ce point (ou changé de monde) : un ami ne peut pas débloquer
-     * les lieux à leur place. Pas vidé à la déconnexion, sinon se reconnecter suffirait.
-     */
-    private final Map<UUID, Location> pulled = new ConcurrentHashMap<>();
 
     public PlayerRegionListener(SHCodex plugin) {
         this.plugin = plugin;
     }
 
     /**
-     * Téléportation qui arrive sur un autre joueur (à « decouverte.rayon-arrivee » blocs) : le joueur a été amené par
-     * quelqu'un. Les autres téléportations (warp, spawn, codex, île) ne bloquent rien.
+     * Téléportation qui arrive sur un autre joueur (/tpa, /tpahere : la position d'arrivée est celle d'un joueur, à
+     * « teleportation.rayon » blocs près) dans une zone du codex que le voyageur n'a pas encore découverte : refusée,
+     * il doit y aller à pied. Les warps, le spawn, l'île et la téléportation du /codex ne visent pas un joueur, et leurs
+     * causes (COMMAND pour /warp) restent hors de « teleportation.causes ».
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
+        org.bukkit.configuration.file.FileConfiguration config = plugin.getConfigManager().getRawConfig();
+        List<String> causes = config.isList("teleportation.causes")
+                ? config.getStringList("teleportation.causes") : List.of("PLUGIN");
+        if (!config.getBoolean("teleportation.bloquer-vers-joueur", true) || !causes.contains(event.getCause().name())) {
+            return;
+        }
         Player player = event.getPlayer();
         Location to = event.getTo();
-        if (to == null || to.getWorld() == null) {
+        if (to == null || to.getWorld() == null || player.hasPermission("shcodex.teleportation.libre")) {
             return;
         }
-        double radius = plugin.getConfig().getDouble("decouverte.rayon-arrivee", 1.5);
-        if (radius <= 0) {
-            pulled.remove(player.getUniqueId());
-            return;
-        }
+        double radius = config.getDouble("teleportation.rayon", 0.5);
         double r2 = radius * radius;
+        List<Player> hosts = new ArrayList<>();
         for (Player other : to.getWorld().getPlayers()) {
             if (!other.equals(player) && other.getLocation().distanceSquared(to) <= r2) {
-                pulled.put(player.getUniqueId(), to.clone());
+                hosts.add(other);
+            }
+        }
+        if (hosts.isEmpty()) {
+            return;
+        }
+        PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player.getUniqueId());
+        if (playerData == null) {
+            return;
+        }
+        for (RegionConfig zone : zonesAt(to)) {
+            if (!playerData.hasDiscovered(zone.getId()) && canDiscover(player, zone)) {
+                event.setCancelled(true);
+                ConfigManager cfg = plugin.getConfigManager();
+                player.sendMessage(cfg.message("teleportation-voyageur",
+                        "&7&l« &c&lSH &8&l» &7Ce lieu du &c/codex&7 n'est pas encore découvert, il faut le rejoindre &cà pied&7."));
+                String host = cfg.message("teleportation-hote",
+                        "&7&l« &c&lSH &8&l» &c{player} &7n'a pas encore découvert ce lieu du &c/codex&7, emmenez-le &cà pied&7.")
+                        .replace("{player}", player.getName());
+                hosts.forEach(h -> h.sendMessage(host));
                 return;
             }
         }
-        pulled.remove(player.getUniqueId());
+    }
+
+    /** Zones du codex (regions.yml) qui contiennent ce point. */
+    private List<RegionConfig> zonesAt(Location loc) {
+        RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
+        ApplicableRegionSet applicable = query.getApplicableRegions(BukkitAdapter.adapt(loc));
+        String worldName = loc.getWorld().getName();
+        List<RegionConfig> out = new ArrayList<>();
+        for (ProtectedRegion wgRegion : applicable) {
+            for (RegionConfig regionConfig : plugin.getConfigManager().getRegionsByWorldGuardId(wgRegion.getId())) {
+                if (worldName.equalsIgnoreCase(regionConfig.getWorldName())) {
+                    out.add(regionConfig);
+                }
+            }
+        }
+        return out;
+    }
+
+    private static boolean canDiscover(Player player, RegionConfig zone) {
+        return player.hasPermission("shcodex.discover." + zone.getId()) || player.hasPermission("shcodex.discover.*");
     }
 
     // MONITOR + ignoreCancelled : on lit la position d'arrivée, valable seulement si le déplacement a bien lieu
@@ -78,15 +115,6 @@ public class PlayerRegionListener implements Listener {
             return; // Le joueur n'a pas changé de bloc
         }
 
-        Location arrival = pulled.get(player.getUniqueId());
-        if (arrival != null) {
-            double free = plugin.getConfig().getDouble("decouverte.distance-liberation", 12);
-            if (arrival.getWorld() != to.getWorld() || arrival.distanceSquared(to) >= free * free) {
-                pulled.remove(player.getUniqueId());
-            } else {
-                return; // Amené par un autre joueur : il doit d'abord explorer à pied
-            }
-        }
 
         PlayerData playerData = plugin.getPlayerDataManager().getPlayerData(player.getUniqueId());
         if (playerData == null) {

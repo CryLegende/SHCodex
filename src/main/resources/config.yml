@@ -30,19 +30,25 @@ blacklist-worlds:
   - "world_the_end"
   # - "another_world_blacklisted"
 
-# Découvertes à pied : un joueur amené par un autre joueur (/tpa, /tpahere : il arrive à « rayon-arrivee » blocs d'un
-# autre joueur) ne découvre rien tant qu'il n'a pas marché « distance-liberation » blocs depuis son point d'arrivée ou
-# changé de monde. Les warps, le spawn, l'île et la téléportation du /codex ne sont pas concernés.
-# rayon-arrivee: 0 = désactivé.
-decouverte:
-  rayon-arrivee: 1.5
-  distance-liberation: 12
+# Zones à découvrir à pied : une téléportation qui arrive sur un autre joueur (/tpa, /tpahere : la position d'arrivée
+# est celle d'un joueur, à « rayon » blocs près) est refusée quand elle mène dans une zone du codex que le voyageur n'a
+# pas encore découverte. Pour montrer un lieu à un ami, il faut l'y emmener à pied. Seules les « causes » listées sont
+# vérifiées : PLUGIN pour les /tpa faits par un plugin ; /warp, /spawn et la téléportation du /codex passent par COMMAND
+# et ne visent pas un joueur. Permission shcodex.teleportation.libre : jamais bloqué.
+teleportation:
+  bloquer-vers-joueur: true
+  causes:
+    - PLUGIN
+  rayon: 0.5
 
 messages:
   no-permission: "&8&l« &f&lSH &8&l» &fCommande inconnue, essayer autre chose"
   reload: "&7&l« &a&lSH &8&l» &7Configuration de &aSHCodex &7rechargée &aavec succès"
   player-only: "&7&l« &c&lSH &8&l» &7Cette commande ne peut être exécutée que par un joueur."
   world-blacklisted: "&7&l« &c&lSH &8&l» &7Vous ne pouvez pas ouvrir le &cCodex&7 dans ce monde"
+  # Téléportation refusée vers une zone pas encore découverte : au voyageur, puis au joueur sur qui il arrivait
+  teleportation-voyageur: "&7&l« &c&lSH &8&l» &7Ce lieu du &c/codex&7 n'est pas encore découvert, il faut le rejoindre &cà pied&7."
+  teleportation-hote: "&7&l« &c&lSH &8&l» &c{player} &7n'a pas encore découvert ce lieu du &c/codex&7, emmenez-le &cà pied&7."
 
   # Messages pour les commandes admin
   admin:

@@ -240,6 +240,12 @@ public class ConfigManager {
         return prefix + ChatUtil.colorize(config.getString("messages.admin." + key, defaultValue));
     }
 
+    /** Message de la section messages, avec le préfixe ; la valeur par défaut sert quand la clé manque. */
+    public String message(String key, String defaultValue) {
+        String prefix = ChatUtil.colorize(config.getString("messages.prefix", ""));
+        return prefix + ChatUtil.colorize(config.getString("messages." + key, defaultValue));
+    }
+
     // Getters
     public List<String> getBlacklistedWorlds() {
         return blacklistedWorlds;

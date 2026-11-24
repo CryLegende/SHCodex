@@ -16,7 +16,7 @@
 
 Un codex de zones à découvrir avec WorldGuard.
 
-Un joueur amené par un autre joueur (`/tpa`, `/tpahere`, arrivée à `decouverte.rayon-arrivee` blocs d'un joueur) ne découvre aucune zone tant qu'il n'a pas marché `decouverte.distance-liberation` blocs depuis son point d'arrivée ou changé de monde. Les warps, le spawn, l'île et la téléportation du `/codex` ne sont pas concernés, et `rayon-arrivee: 0` coupe cette règle.
+Une téléportation qui arrive sur un autre joueur (`/tpa`, `/tpahere`) est refusée quand elle mène dans une zone du codex que le voyageur n'a pas encore découverte : pour montrer un lieu à un ami, il faut l'y emmener à pied. Les warps, le spawn, l'île et la téléportation du `/codex` ne sont pas concernés (section `teleportation` de config.yml, permission `shcodex.teleportation.libre`).
 
 Utilisé sur : **Opale**.
 
