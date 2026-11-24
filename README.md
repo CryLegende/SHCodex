@@ -34,6 +34,18 @@ Utilisé sur : **Opale**.
 | `/codex admin <joueur> <list\|unlock\|lock> [région]` | | Voir, débloquer ou reverrouiller les régions d'un joueur. | `shcodex.admin` |
 | `/codex import` | | Mode réseau : copie `playerdata/` dans la base, sans rien écraser. | `shcodex.admin` |
 
+## Lignes communes du menu
+
+`region-extra-lore` (menu.yml) ajoute des lignes sous la description de toutes les régions, découvertes ou non. `{region_id}` y est l'identifiant de la région, et les placeholders PlaceholderAPI sont lus ; une ligne dont les placeholders ne donnent rien disparaît :
+
+```yaml
+region-extra-lore:
+  undiscovered:
+    - "%shcollectibles_zone_{region_id}%"
+  discovered:
+    - "%shcollectibles_zone_{region_id}%"
+```
+
 ## Plusieurs serveurs Opale
 
 Les régions de `regions.yml` sont dans des mondes qui n'existent que sur un seul serveur (celui du spawn) : c'est lui qui détecte les découvertes et donne les récompenses.

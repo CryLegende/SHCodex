@@ -8,6 +8,7 @@ import org.Cry_Legende.sHCodex.playerdata.PlayerData;
 import org.Cry_Legende.sHCodex.util.ChatUtil;
 import org.Cry_Legende.sHCodex.util.ItemBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -124,8 +125,12 @@ public class MenuManager {
                 String itemName = displayItemConfig.getName().replace("{region_name}", regionConfig.getDisplayName());
                 List<String> itemLore = new ArrayList<>();
 
-                for (String line : displayItemConfig.getLore()) {
-                    line = line.replace("{region_name}", regionConfig.getDisplayName());
+                List<String> sourceLore = new ArrayList<>(displayItemConfig.getLore());
+                sourceLore.addAll(discovered ? plugin.getConfigManager().getExtraDiscoveredLore()
+                    : plugin.getConfigManager().getExtraUndiscoveredLore());
+                for (String line : sourceLore) {
+                    line = line.replace("{region_name}", regionConfig.getDisplayName())
+                        .replace("{region_id}", regionConfig.getId());
                     if (discovered) {
                         if (line.contains("{discovery_date}")) {
                             long discoveryTimestamp = playerData.getDiscoveryTimestamp(regionConfig.getId());
@@ -143,7 +148,12 @@ public class MenuManager {
 
                 if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
                     itemName = PlaceholderAPI.setPlaceholders(player, itemName);
-                    itemLore = itemLore.stream().map(l -> PlaceholderAPI.setPlaceholders(player, l)).collect(Collectors.toList());
+                    // Une ligne faite de placeholders qui ne donnent rien disparaît ; une ligne vide écrite exprès reste.
+                    itemLore = itemLore.stream()
+                        .map(l -> new String[]{l, PlaceholderAPI.setPlaceholders(player, l)})
+                        .filter(l -> l[0].equals(l[1]) || !ChatColor.stripColor(ChatUtil.colorize(l[1])).isBlank())
+                        .map(l -> l[1])
+                        .collect(Collectors.toList());
                 }
 
                 ItemBuilder itemBuilder = new ItemBuilder(displayItemConfig.getMaterial())

@@ -69,3 +69,9 @@ region-item-slots:
 # qui exécute une commande ouvrant ce menu spécifique (si c'est un autre plugin ou une partie
 # que tu veux recréer).
 # Pour l'instant, la structure de code fournie se concentre sur UN type de menu principal paginé.
+
+# Lignes ajoutées sous la description de toutes les régions : {region_id}, {region_name}, et les placeholders
+# PlaceholderAPI. Une ligne dont les placeholders ne donnent rien disparaît.
+region-extra-lore:
+  undiscovered: []
+  discovered: []

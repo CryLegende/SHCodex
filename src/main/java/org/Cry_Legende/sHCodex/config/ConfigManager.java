@@ -42,6 +42,8 @@ public class ConfigManager {
     private int menuSize;
     private Map<Integer, MenuItemConfig> menuStaticItems = new HashMap<>();
     private MenuItemConfig menuFillerItem;
+    private List<String> extraUndiscoveredLore = new ArrayList<>();
+    private List<String> extraDiscoveredLore = new ArrayList<>();
     private List<Integer> regionItemSlots = new ArrayList<>();
 
     // Cached messages
@@ -174,6 +176,15 @@ public class ConfigManager {
         plugin.getLogger().info(regionConfigs.size() + " région(s) chargée(s).");
     }
 
+    /** Lignes ajoutées sous le lore de toutes les régions (menu.yml, region-extra-lore). */
+    public List<String> getExtraUndiscoveredLore() {
+        return extraUndiscoveredLore;
+    }
+
+    public List<String> getExtraDiscoveredLore() {
+        return extraDiscoveredLore;
+    }
+
     private void loadMenuConfig() {
         menuStaticItems.clear();
         menuTitle = ChatUtil.colorize(menuConfig.getString("title", "&8Codex Menu - Page {page}/{max_pages}"));
@@ -182,6 +193,9 @@ public class ConfigManager {
             plugin.getLogger().warning("Invalid menu size in menu.yml. Defaulting to 54.");
             menuSize = 54;
         }
+
+        extraUndiscoveredLore = menuConfig.getStringList("region-extra-lore.undiscovered").stream().map(ChatUtil::colorize).collect(Collectors.toList());
+        extraDiscoveredLore = menuConfig.getStringList("region-extra-lore.discovered").stream().map(ChatUtil::colorize).collect(Collectors.toList());
 
         ConfigurationSection itemsSection = menuConfig.getConfigurationSection("static-items");
         if (itemsSection != null) {
